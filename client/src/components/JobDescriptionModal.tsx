@@ -122,7 +122,7 @@ export function JobDescriptionModal() {
           
           <div className="flex flex-col sm:flex-row gap-3">
             <Button 
-              className="bg-highlight text-background hover:bg-opacity-80 transition-colors px-4 py-2 rounded-md flex items-center justify-center flex-1" 
+              className="btn-electric-blue px-4 py-2 rounded-md flex items-center justify-center flex-1" 
               onClick={handleAnalyzeJobDescription}
               disabled={isAnalyzing}
             >
@@ -139,7 +139,7 @@ export function JobDescriptionModal() {
             </Button>
             
             <Button 
-              className="bg-primary-accent text-background hover:bg-opacity-80 transition-colors px-4 py-2 rounded-md flex items-center justify-center" 
+              className="bg-gray-500 text-white px-4 py-2 rounded-md flex items-center justify-center shadow-md" 
               onClick={toggleJobDescriptionModal}
               variant="outline"
             >
