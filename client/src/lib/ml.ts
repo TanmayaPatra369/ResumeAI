@@ -77,51 +77,67 @@ export const improveDescription = async (
 
 // Function to analyze a resume and generate improvement suggestions
 export const analyzeResume = async (resume: Resume) => {
-  // This is a client-side analysis since we don't have a full ML model
-  // In a real application, this would call a backend API with proper models
-  
-  const score = { score: 0, improvements: [], grammarIssues: [] };
-  
-  // Check personal details
-  if (!resume.personalDetails.summary || resume.personalDetails.summary.length < 50) {
-    score.improvements.push('Add a more detailed professional summary (aim for 75-150 words)');
-    score.score -= 5;
+  try {
+    // Call the AI-powered resume scoring API
+    const res = await apiRequest('POST', '/api/score-resume', {
+      resume
+    });
+    
+    const aiScore = await res.json();
+    
+    // Return the AI-generated score and suggestions
+    return {
+      score: aiScore.score || 0,
+      improvements: aiScore.improvements || [],
+      grammarIssues: aiScore.grammarIssues || []
+    };
+  } catch (error) {
+    console.error('Error scoring resume with AI:', error);
+    
+    // Fallback to basic client-side analysis if the API fails
+    const score = { score: 0, improvements: [], grammarIssues: [] };
+    
+    // Check personal details
+    if (!resume.personalDetails.summary || resume.personalDetails.summary.length < 50) {
+      score.improvements.push('Add a more detailed professional summary (aim for 75-150 words)');
+      score.score -= 5;
+    }
+    
+    // Check experience descriptions
+    const experienceIssues = resume.experience.filter(exp => 
+      !exp.description || exp.description.split('\n').length < 3
+    );
+    
+    if (experienceIssues.length > 0) {
+      score.improvements.push('Add more bullet points to your work experience (aim for 3-5 per job)');
+      score.score -= experienceIssues.length * 3;
+    }
+    
+    // Check for quantifiable achievements
+    const hasQuantifiableAchievements = resume.experience.some(exp => 
+      exp.description && /\d+%|\d+x|\$\d+|\d+ [a-z]+/.test(exp.description)
+    );
+    
+    if (!hasQuantifiableAchievements) {
+      score.improvements.push('Add quantifiable achievements to your experience (e.g., "increased sales by 20%")');
+      score.score -= 10;
+    }
+    
+    // Check skills count
+    if (!resume.skills.length || resume.skills.length < 5) {
+      score.improvements.push('Add more skills relevant to your field (aim for 8-12 key skills)');
+      score.score -= 8;
+    }
+    
+    // Check for projects
+    if (!resume.projects.length) {
+      score.improvements.push('Add at least one project that showcases your skills');
+      score.score -= 7;
+    }
+    
+    // Calculate final score (start with 100 and subtract penalties)
+    score.score = Math.max(0, 100 - Math.abs(score.score));
+    
+    return score;
   }
-  
-  // Check experience descriptions
-  const experienceIssues = resume.experience.filter(exp => 
-    !exp.description || exp.description.split('\n').length < 3
-  );
-  
-  if (experienceIssues.length > 0) {
-    score.improvements.push('Add more bullet points to your work experience (aim for 3-5 per job)');
-    score.score -= experienceIssues.length * 3;
-  }
-  
-  // Check for quantifiable achievements
-  const hasQuantifiableAchievements = resume.experience.some(exp => 
-    exp.description && /\d+%|\d+x|\$\d+|\d+ [a-z]+/.test(exp.description)
-  );
-  
-  if (!hasQuantifiableAchievements) {
-    score.improvements.push('Add quantifiable achievements to your experience (e.g., "increased sales by 20%")');
-    score.score -= 10;
-  }
-  
-  // Check skills count
-  if (!resume.skills.length || resume.skills.length < 5) {
-    score.improvements.push('Add more skills relevant to your field (aim for 8-12 key skills)');
-    score.score -= 8;
-  }
-  
-  // Check for projects
-  if (!resume.projects.length) {
-    score.improvements.push('Add at least one project that showcases your skills');
-    score.score -= 7;
-  }
-  
-  // Calculate final score (start with 100 and subtract penalties)
-  score.score = Math.max(0, 100 - Math.abs(score.score));
-  
-  return score;
 };

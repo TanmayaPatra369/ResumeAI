@@ -2,6 +2,7 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { analyzeJobDescription, generateSummary, suggestSkills, improveDescription } from "./nlp";
+import { scoreResumeWithAI } from "./openai";
 import { z } from "zod";
 import { insertResumeSchema, insertJobAnalysisSchema } from "@shared/schema";
 
@@ -167,6 +168,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ improved });
     } catch (error) {
       res.status(500).json({ message: "Error improving description" });
+    }
+  });
+  
+  // Score a resume using AI
+  app.post(`${apiPrefix}/score-resume`, async (req: Request, res: Response) => {
+    const { resume } = req.body;
+    
+    if (!resume) {
+      return res.status(400).json({ message: "Resume data is required" });
+    }
+    
+    try {
+      const scoreResult = await scoreResumeWithAI(resume);
+      res.json(scoreResult);
+    } catch (error) {
+      console.error("Error scoring resume:", error);
+      res.status(500).json({ message: "Error scoring resume" });
     }
   });
 

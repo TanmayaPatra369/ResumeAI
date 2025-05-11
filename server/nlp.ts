@@ -1,5 +1,6 @@
 import natural from 'natural';
 import { storage } from './storage';
+import { analyzeJobWithAI, generateSummaryWithAI, suggestSkillsWithAI, improveDescriptionWithAI } from './openai';
 
 // Tokenizer for breaking text into words
 const tokenizer = new natural.WordTokenizer();
@@ -13,8 +14,7 @@ const stemmer = natural.PorterStemmer;
 // Function to analyze job description and compare with resume
 export async function analyzeJobDescription(jobDescription: string, resumeContent: any) {
   try {
-    // Import OpenAI analyzer
-    const { analyzeJobWithAI } = require('./openai');
+    // Use OpenAI analyzer
     
     try {
       // Try using OpenAI for a more sophisticated analysis
@@ -58,8 +58,7 @@ export async function analyzeJobDescription(jobDescription: string, resumeConten
 // Function to generate summary based on resume content
 export async function generateSummary(resumeContent: any, jobDescription?: string) {
   try {
-    // Import OpenAI summary generator
-    const { generateSummaryWithAI } = require('./openai');
+    // Use OpenAI summary generator
     
     try {
       // Try using OpenAI for a more professional summary
@@ -122,8 +121,8 @@ export async function generateSummary(resumeContent: any, jobDescription?: strin
 // Function to suggest skills based on job title and industry
 export async function suggestSkills(jobTitle: string, industry?: string, currentSkills?: string[]) {
   try {
-    // Import OpenAI skill suggestion
-    const { suggestSkillsWithAI } = require('./openai');
+    // Import OpenAI skill suggestion - already imported at top level
+    // const { suggestSkillsWithAI } = require('./openai');
     
     // Input validation
     if (!jobTitle || typeof jobTitle !== 'string') {
@@ -182,8 +181,7 @@ export async function suggestSkills(jobTitle: string, industry?: string, current
 // Function to improve description
 export async function improveDescription(description: string, type: string) {
   try {
-    // Import OpenAI description improver
-    const { improveDescriptionWithAI } = require('./openai');
+    // Use OpenAI description improver
     
     // Check if description is empty
     if (!description.trim()) {
