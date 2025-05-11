@@ -85,11 +85,17 @@ export const analyzeResume = async (resume: Resume) => {
     
     const aiScore = await res.json();
     
+    // Check if we got an error response
+    if (aiScore.error) {
+      console.warn('AI scoring returned an error:', aiScore.error);
+      throw new Error(aiScore.error);
+    }
+    
     // Return the AI-generated score and suggestions
     return {
       score: aiScore.score || 0,
-      improvements: aiScore.improvements || [],
-      grammarIssues: aiScore.grammarIssues || []
+      improvements: Array.isArray(aiScore.improvements) ? aiScore.improvements : [],
+      grammarIssues: Array.isArray(aiScore.grammarIssues) ? aiScore.grammarIssues : []
     };
   } catch (error) {
     console.error('Error scoring resume with AI:', error);
