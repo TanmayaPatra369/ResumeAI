@@ -24,7 +24,7 @@ export function TemplateSelector() {
             >
               <div className={`relative rounded-md p-1 transition-all ${
                 activeTemplate === template.id 
-                  ? 'bg-[#1E90FF] bg-opacity-10 ring-2 ring-[#1E90FF] transform scale-105 shadow-md' 
+                  ? 'bg-[#8AB4F8] bg-opacity-10 ring-2 ring-[#8AB4F8] transform scale-105 shadow-md' 
                   : 'hover:bg-card hover:bg-opacity-50 hover:shadow-md'
               }`}>
                 <img 
@@ -33,13 +33,13 @@ export function TemplateSelector() {
                   className="w-full h-24 object-cover rounded-md"
                 />
                 {activeTemplate === template.id && (
-                  <div className="absolute top-2 right-2 bg-[#1E90FF] text-xs text-white px-2 py-1 rounded-full font-semibold shadow-sm">
+                  <div className="absolute top-2 right-2 bg-[#8AB4F8] text-xs text-white px-2 py-1 rounded-full font-semibold shadow-sm">
                     ✓ Selected
                   </div>
                 )}
               </div>
               <span className={`block text-center mt-2 text-sm font-medium ${
-                activeTemplate === template.id ? 'text-[#1E90FF] font-bold' : 'text-primary-text'
+                activeTemplate === template.id ? 'text-[#8AB4F8] font-bold' : 'text-primary-text'
               }`}>{template.name}</span>
             </div>
           ))}

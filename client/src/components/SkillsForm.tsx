@@ -114,7 +114,7 @@ export function SkillsForm() {
               {suggestedSkills.map((skill) => (
                 <span
                   key={skill}
-                  className="bg-button-hover border border-primary-accent text-primary-accent px-2 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer suggestion-tag"
+                  className="bg-[#8AB4F8] bg-opacity-10 border border-[#8AB4F8] text-[#8AB4F8] px-2 py-1 rounded-full text-sm flex items-center gap-1 cursor-pointer suggestion-tag shadow-sm"
                   onClick={() => handleAddSuggestedSkill(skill)}
                 >
                   <Plus className="h-3 w-3" />

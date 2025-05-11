@@ -168,22 +168,22 @@
 
 /* Electric blue button styling */
 .btn-electric-blue {
-  background-color: #1E90FF !important; /* Electric Blue */
+  background-color: #8AB4F8 !important; /* Our Electric Blue */
   color: white !important;
   border: none !important;
-  box-shadow: 0 4px 6px rgba(30, 144, 255, 0.2) !important;
+  box-shadow: 0 4px 6px rgba(138, 180, 248, 0.2) !important;
   transition: transform 0.2s, box-shadow 0.2s !important;
 }
 
 .btn-electric-blue:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 6px 10px rgba(30, 144, 255, 0.3) !important;
-  background-color: #1E90FF !important; /* Keep the same color on hover */
+  box-shadow: 0 6px 10px rgba(138, 180, 248, 0.3) !important;
+  background-color: #8AB4F8 !important; /* Keep the same color on hover */
 }
 
 .btn-electric-blue:active {
   transform: translateY(1px) !important;
-  box-shadow: 0 2px 4px rgba(30, 144, 255, 0.2) !important;
+  box-shadow: 0 2px 4px rgba(138, 180, 248, 0.2) !important;
 }
 
 /* Preview border effect when printing */
