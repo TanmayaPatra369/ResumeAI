@@ -27,13 +27,16 @@ export function ProjectsForm() {
     try {
       setImprovingIds(prev => [...prev, id]);
       
-      const improved = await improveDescription(project.description, 'project');
+      const result = await improveDescription(project.description, 'project');
       
-      updateProject(id, { description: improved });
+      updateProject(id, { description: result.improved });
       
       toast({
-        title: "Description Enhanced",
-        description: "Your project description has been improved."
+        title: result.fallback ? "Description Updated" : "Description Enhanced",
+        description: result.fallback 
+          ? (result.message || "Basic formatting applied to your project.")
+          : "Your project description has been improved with AI.",
+        variant: result.fallback ? "default" : "default"
       });
     } catch (error) {
       toast({

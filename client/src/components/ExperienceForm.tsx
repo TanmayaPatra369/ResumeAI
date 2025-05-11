@@ -52,13 +52,16 @@ export function ExperienceForm() {
         }
       }
       
-      const improved = await improveDescription(description, 'experience');
+      const result = await improveDescription(description, 'experience');
       
-      updateExperience(id, { description: improved });
+      updateExperience(id, { description: result.improved });
       
       toast({
-        title: "Description Enhanced",
-        description: "Your experience description has been improved with industry-standard formatting."
+        title: result.fallback ? "Description Updated" : "Description Enhanced",
+        description: result.fallback 
+          ? (result.message || "Basic formatting applied to your description.")
+          : "Your experience description has been improved with industry-standard formatting.",
+        variant: result.fallback ? "default" : "default"
       });
     } catch (error) {
       toast({

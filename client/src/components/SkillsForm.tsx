@@ -25,12 +25,24 @@ export function SkillsForm() {
       
       try {
         setIsLoadingSuggestions(true);
-        const suggestions = await suggestSkills(
+        const response = await suggestSkills(
           personalDetails.jobTitle,
           undefined,
           skills
         );
-        setSuggestedSkills(suggestions?.slice(0, 3) || []); // Just show top 3
+        
+        // Extract just the top 3 skills from the response
+        const topSkills = response.skills.slice(0, 3);
+        setSuggestedSkills(topSkills);
+        
+        // If we're using fallback data, show a notification
+        if (response.fallback) {
+          toast({
+            title: "Basic Suggestions",
+            description: response.message || "Using basic skill suggestions due to API limitations.",
+            variant: "default"
+          });
+        }
       } catch (error) {
         console.error('Error loading skill suggestions:', error);
         // Fallback suggestions based on common skills
