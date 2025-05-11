@@ -48,10 +48,11 @@ export const suggestSkills = async (
     });
     
     const data = await res.json();
-    return data.skills;
+    return data.skills || [];
   } catch (error) {
     console.error('Error suggesting skills:', error);
-    throw new Error('Failed to suggest skills. Please try again.');
+    // Return empty array instead of throwing to allow handling at component level
+    return [];
   }
 };
 

@@ -21,18 +21,22 @@ export function SkillsForm() {
   // Load skill suggestions when job title changes
   useEffect(() => {
     const loadSuggestions = async () => {
+      if (!personalDetails.jobTitle) return;
+      
       try {
-        if (personalDetails.jobTitle) {
-          setIsLoadingSuggestions(true);
-          const suggestions = await suggestSkills(
-            personalDetails.jobTitle,
-            undefined,
-            skills
-          );
-          setSuggestedSkills(suggestions.slice(0, 3)); // Just show top 3
-        }
+        setIsLoadingSuggestions(true);
+        const suggestions = await suggestSkills(
+          personalDetails.jobTitle,
+          undefined,
+          skills
+        );
+        setSuggestedSkills(suggestions?.slice(0, 3) || []); // Just show top 3
       } catch (error) {
         console.error('Error loading skill suggestions:', error);
+        // Fallback suggestions based on common skills
+        setSuggestedSkills(['Communication', 'Problem Solving', 'Teamwork'].filter(
+          skill => !skills.includes(skill)
+        ));
       } finally {
         setIsLoadingSuggestions(false);
       }

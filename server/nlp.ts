@@ -102,10 +102,16 @@ export async function generateSummary(resumeContent: any) {
 // Function to suggest skills based on job title and industry
 export async function suggestSkills(jobTitle: string, industry?: string, currentSkills?: string[]) {
   try {
+    // Input validation
+    if (!jobTitle || typeof jobTitle !== 'string') {
+      console.warn('Invalid job title provided:', jobTitle);
+      return getFallbackSkillSuggestions('', currentSkills);
+    }
+    
     // Get skill suggestions from storage
     const suggestions = await storage.getSkillSuggestions(jobTitle, industry);
     
-    if (suggestions.length === 0) {
+    if (!suggestions || suggestions.length === 0) {
       // If no suggestions in storage, use hardcoded fallback
       return getFallbackSkillSuggestions(jobTitle, currentSkills);
     }
@@ -113,7 +119,9 @@ export async function suggestSkills(jobTitle: string, industry?: string, current
     // Combine skills from all matching suggestions
     let allSkills: string[] = [];
     for (const suggestion of suggestions) {
-      allSkills = [...allSkills, ...suggestion.skills];
+      if (suggestion && suggestion.skills && Array.isArray(suggestion.skills)) {
+        allSkills = [...allSkills, ...suggestion.skills];
+      }
     }
     
     // Remove duplicates
@@ -122,7 +130,9 @@ export async function suggestSkills(jobTitle: string, industry?: string, current
     // Remove skills the user already has
     if (currentSkills && currentSkills.length > 0) {
       allSkills = allSkills.filter(skill => 
-        !currentSkills.some(current => current.toLowerCase() === skill.toLowerCase())
+        !currentSkills.some(current => 
+          current && current.toLowerCase() === skill.toLowerCase()
+        )
       );
     }
     
@@ -130,7 +140,8 @@ export async function suggestSkills(jobTitle: string, industry?: string, current
     return allSkills.slice(0, 10);
   } catch (error) {
     console.error('Error suggesting skills:', error);
-    throw new Error('Failed to suggest skills');
+    // Return default skills instead of throwing
+    return ['Communication', 'Problem Solving', 'Teamwork', 'Adaptability', 'Time Management'];
   }
 }
 
