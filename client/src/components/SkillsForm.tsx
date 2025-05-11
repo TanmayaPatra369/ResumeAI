@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Plus, X, FileSearch, Sparkles } from 'lucide-react';
+
 import { suggestSkills } from '@/lib/ml';
 import { useToast } from '@/hooks/use-toast';
 
@@ -90,8 +91,8 @@ export function SkillsForm() {
                 onKeyDown={handleKeyDown}
               />
               {personalDetails.jobTitle && (
-                <div className="absolute top-2 right-2">
-                  <Sparkles className="h-4 w-4 text-highlight" title="AI-powered skill suggestions" />
+                <div className="absolute top-2 right-2" title="AI-powered skill suggestions">
+                  <Sparkles className="h-4 w-4 text-highlight" aria-label="AI-powered skill suggestions" />
                 </div>
               )}
             </div>

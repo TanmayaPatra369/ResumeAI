@@ -48,7 +48,7 @@ export function ProjectsForm() {
 
   return (
     <Card className="bg-card-bg rounded-lg shadow-lg">
-      <CardContent className="pt-6">
+      <CardContent className="pt-6 px-6 pb-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Projects</h2>
           <Button
