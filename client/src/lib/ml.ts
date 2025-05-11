@@ -39,7 +39,7 @@ export const suggestSkills = async (
   jobTitle: string,
   industry?: string,
   currentSkills?: string[]
-): Promise<string[]> => {
+): Promise<{ skills: string[], fallback?: boolean, message?: string }> => {
   try {
     const res = await apiRequest('POST', '/api/suggest-skills', {
       jobTitle,
@@ -48,11 +48,25 @@ export const suggestSkills = async (
     });
     
     const data = await res.json();
-    return data.skills || [];
+    
+    // Check if we got fallback data
+    if (data.fallback) {
+      console.warn('Using fallback skill suggestions:', data.message);
+    }
+    
+    return {
+      skills: data.skills || [],
+      fallback: data.fallback || false,
+      message: data.message
+    };
   } catch (error) {
     console.error('Error suggesting skills:', error);
-    // Return empty array instead of throwing to allow handling at component level
-    return [];
+    // Return empty array with fallback flag instead of throwing
+    return { 
+      skills: [],
+      fallback: true,
+      message: "Could not retrieve skill suggestions. Using defaults."
+    };
   }
 };
 
@@ -60,7 +74,7 @@ export const suggestSkills = async (
 export const improveDescription = async (
   description: string,
   type: 'experience' | 'project' | 'summary'
-): Promise<string> => {
+): Promise<{ improved: string, fallback?: boolean, message?: string }> => {
   try {
     const res = await apiRequest('POST', '/api/improve-description', {
       description,
@@ -68,10 +82,25 @@ export const improveDescription = async (
     });
     
     const data = await res.json();
-    return data.improved;
+    
+    // Check if we got fallback data
+    if (data.fallback) {
+      console.warn('Using fallback description improvement:', data.message);
+    }
+    
+    return {
+      improved: data.improved,
+      fallback: data.fallback || false,
+      message: data.message
+    };
   } catch (error) {
     console.error('Error improving description:', error);
-    throw new Error('Failed to improve description. Please try again.');
+    // Return original description with fallback flag instead of throwing
+    return { 
+      improved: description,
+      fallback: true,
+      message: "Could not enhance content. Using original text."
+    };
   }
 };
 

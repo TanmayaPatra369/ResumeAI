@@ -149,8 +149,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const skills = await suggestSkills(jobTitle, industry, currentSkills);
       res.json({ skills });
-    } catch (error) {
-      res.status(500).json({ message: "Error suggesting skills" });
+    } catch (error: any) {
+      console.error("Error suggesting skills:", error);
+      
+      // Default fallback skills by category
+      const fallbackSkills = {
+        "Data Science": ["Python", "R", "TensorFlow", "SQL", "Tableau", "Machine Learning"],
+        "Software Engineering": ["JavaScript", "React", "Node.js", "Java", "Git", "CI/CD"],
+        "Marketing": ["SEO", "Content Marketing", "Social Media", "Analytics", "Copywriting"],
+        "Finance": ["Financial Analysis", "Excel", "Financial Modeling", "Accounting", "Forecasting"],
+        "Design": ["UI/UX", "Adobe Creative Suite", "Figma", "Typography", "Wireframing"]
+      };
+      
+      // Select an appropriate category or default to Software Engineering
+      const category = jobTitle.toLowerCase().includes("data") ? "Data Science" :
+                      jobTitle.toLowerCase().includes("engineer") ? "Software Engineering" :
+                      jobTitle.toLowerCase().includes("market") ? "Marketing" :
+                      jobTitle.toLowerCase().includes("financ") ? "Finance" :
+                      jobTitle.toLowerCase().includes("design") ? "Design" :
+                      "Software Engineering";
+      
+      // Return fallback skills and note that they're fallback
+      res.status(200).json({ 
+        skills: fallbackSkills[category],
+        fallback: true,
+        message: "Using basic skill suggestions due to API limitations."
+      });
     }
   });
 
@@ -166,8 +190,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const improved = await improveDescription(description, type);
       res.json({ improved });
-    } catch (error) {
-      res.status(500).json({ message: "Error improving description" });
+    } catch (error: any) {
+      console.error("Error improving description:", error);
+      
+      // Basic improvements for different types of content
+      const prefixes = {
+        'experience': '• Led a team of developers to successfully deliver the project on time and within budget.\n• Improved system performance by 30% through code optimization.\n• Collaborated with cross-functional teams to implement new features.',
+        'project': '• Built a responsive web application using React and Node.js.\n• Implemented user authentication and authorization features.\n• Designed and optimized database schema for improved performance.',
+        'summary': 'Dedicated professional with experience in developing scalable applications. Skilled in problem-solving and collaborating with cross-functional teams to deliver high-quality solutions.'
+      };
+      
+      // Return basic improvement with the original text if type doesn't match
+      const fallbackImprovement = prefixes[type] || description;
+      
+      res.status(200).json({ 
+        improved: fallbackImprovement,
+        fallback: true,
+        message: "Using basic content enhancement due to API limitations."
+      });
     }
   });
   
@@ -182,20 +222,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const scoreResult = await scoreResumeWithAI(resume);
       res.json(scoreResult);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error scoring resume:", error);
       
-      // If it's a quota error, send a more specific error message
-      if (error.message && error.message.includes("quota")) {
+      // Check for various types of OpenAI API errors
+      const errorMessage = error?.message || "";
+      const isQuotaError = errorMessage.includes("quota") || 
+                          errorMessage.includes("rate limit") || 
+                          (error?.code === "insufficient_quota");
+      
+      if (isQuotaError) {
         // Return a clear error that the client can handle
         return res.status(429).json({ 
-          error: "API quota exceeded", 
-          message: "OpenAI API quota limit reached. Using fallback analysis.",
-          fallback: true
+          score: 0,
+          improvements: [
+            "Add more details to your work experiences",
+            "Quantify your achievements with numbers", 
+            "Include relevant skills for your industry"
+          ],
+          grammarIssues: [],
+          fallback: true,
+          error: "API quota exceeded",
+          message: "Using basic analysis mode due to API limitations."
         });
       }
       
-      res.status(500).json({ message: "Error scoring resume", fallback: true });
+      // Return usable fallback results for any error
+      res.status(200).json({
+        score: 0,
+        improvements: [
+          "Add more details to your work experiences",
+          "Quantify your achievements with numbers", 
+          "Include relevant skills for your industry"
+        ],
+        grammarIssues: [],
+        fallback: true
+      });
     }
   });
 
