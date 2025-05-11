@@ -113,7 +113,7 @@ export function PersonalDetailsForm() {
               <div className="absolute right-2 top-2">
                 <Button
                   size="sm"
-                  className="text-xs bg-primary-accent text-background px-2 py-1 rounded-full"
+                  className="text-xs btn-electric-blue px-2 py-1 rounded-full"
                   onClick={handleGenerateSummary}
                   disabled={summaryLoading}
                 >

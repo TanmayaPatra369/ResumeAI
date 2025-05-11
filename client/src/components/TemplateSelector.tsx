@@ -13,7 +13,7 @@ export function TemplateSelector() {
 
   return (
     <Card className="bg-card-bg rounded-lg shadow-lg">
-      <CardContent className="pt-6">
+      <CardContent className="pt-6 px-6 pb-6">
         <h2 className="text-xl font-bold mb-4">Resume Template</h2>
         <div className="grid grid-cols-3 gap-4">
           {templates.map((template) => (
@@ -24,7 +24,7 @@ export function TemplateSelector() {
             >
               <div className={`relative rounded-md p-1 transition-all ${
                 activeTemplate === template.id 
-                  ? 'bg-highlight bg-opacity-20 ring-2 ring-highlight transform scale-105' 
+                  ? 'bg-[#1E90FF] bg-opacity-10 ring-2 ring-[#1E90FF] transform scale-105 shadow-md' 
                   : 'hover:bg-card hover:bg-opacity-50 hover:shadow-md'
               }`}>
                 <img 
@@ -33,13 +33,13 @@ export function TemplateSelector() {
                   className="w-full h-24 object-cover rounded-md"
                 />
                 {activeTemplate === template.id && (
-                  <div className="absolute top-2 right-2 bg-highlight text-xs text-background px-2 py-1 rounded-full font-semibold shadow-sm">
+                  <div className="absolute top-2 right-2 bg-[#1E90FF] text-xs text-white px-2 py-1 rounded-full font-semibold shadow-sm">
                     ✓ Selected
                   </div>
                 )}
               </div>
               <span className={`block text-center mt-2 text-sm font-medium ${
-                activeTemplate === template.id ? 'text-highlight' : 'text-primary-text'
+                activeTemplate === template.id ? 'text-[#1E90FF] font-bold' : 'text-primary-text'
               }`}>{template.name}</span>
             </div>
           ))}
