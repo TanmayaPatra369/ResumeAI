@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 export default function Home() {
   const [, setLocation] = useLocation();
   const { initialize, initialized } = useResumeStore();
+  const { toast } = useToast();
 
   // Initialize with default resume if not already initialized
   useEffect(() => {
@@ -19,8 +20,22 @@ export default function Home() {
 
   const handleCreateResume = (e: React.MouseEvent) => {
     e.preventDefault();
-    // Force navigation with window.location in case the setLocation isn't working
-    window.location.href = '/edit';
+    // Show feedback toast to user
+    toast({
+      title: "Creating Resume",
+      description: "Setting up your new resume...",
+    });
+    
+    // Initialize with defaults if needed
+    if (!initialized) {
+      initialize();
+    }
+    
+    // Use setTimeout to give visual feedback that something is happening
+    setTimeout(() => {
+      // Force navigation with window.location in case the setLocation isn't working
+      window.location.href = '/edit';
+    }, 300);
   };
 
   return (

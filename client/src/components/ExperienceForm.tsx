@@ -35,13 +35,30 @@ export function ExperienceForm() {
     try {
       setImprovingIds(prev => [...prev, id]);
       
-      const improved = await improveDescription(exp.description, 'experience');
+      // If description is empty, provide a template example based on job title
+      let description = exp.description;
+      if (!description || description.trim() === '') {
+        // Create default description based on job title
+        const jobTitle = exp.title.toLowerCase();
+        
+        if (jobTitle.includes('developer') || jobTitle.includes('engineer')) {
+          description = '• Developed web applications using modern technologies\n• Collaborated with team members on project tasks\n• Fixed bugs and improved application performance';
+        } else if (jobTitle.includes('manager')) {
+          description = '• Led a team of professionals to deliver project objectives\n• Managed project budgets and resources effectively\n• Implemented process improvements that increased efficiency';
+        } else if (jobTitle.includes('analyst')) {
+          description = '• Analyzed data to identify trends and insights\n• Created reports and dashboards for stakeholders\n• Provided recommendations based on data analysis';
+        } else {
+          description = '• Responsible for key tasks and deliverables\n• Collaborated with team members on projects\n• Implemented improvements in processes';
+        }
+      }
+      
+      const improved = await improveDescription(description, 'experience');
       
       updateExperience(id, { description: improved });
       
       toast({
         title: "Description Enhanced",
-        description: "Your experience description has been improved."
+        description: "Your experience description has been improved with industry-standard formatting."
       });
     } catch (error) {
       toast({

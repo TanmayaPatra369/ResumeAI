@@ -22,8 +22,10 @@ export function TemplateSelector() {
               className={`relative cursor-pointer ${activeTemplate === template.id ? '' : 'opacity-70 hover:opacity-100 transition-opacity'}`}
               onClick={() => handleTemplateSelect(template.id)}
             >
-              <div className={`relative rounded-md p-1 ${
-                activeTemplate === template.id ? 'bg-highlight bg-opacity-20 ring-2 ring-highlight' : 'hover:bg-card hover:bg-opacity-50'
+              <div className={`relative rounded-md p-1 transition-all ${
+                activeTemplate === template.id 
+                  ? 'bg-highlight bg-opacity-20 ring-2 ring-highlight transform scale-105' 
+                  : 'hover:bg-card hover:bg-opacity-50 hover:shadow-md'
               }`}>
                 <img 
                   src={template.thumbnail}
@@ -31,7 +33,7 @@ export function TemplateSelector() {
                   className="w-full h-24 object-cover rounded-md"
                 />
                 {activeTemplate === template.id && (
-                  <div className="absolute top-2 right-2 bg-highlight text-xs text-background px-2 py-1 rounded-full font-semibold">
+                  <div className="absolute top-2 right-2 bg-highlight text-xs text-background px-2 py-1 rounded-full font-semibold shadow-sm">
                     ✓ Selected
                   </div>
                 )}
