@@ -21,7 +21,7 @@ export function ResumeBuilder() {
       
       <main className="container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
         {/* Left Column: Forms */}
-        <div className="lg:w-1/2 space-y-section">
+        <div className="lg:w-1/2 space-y-8">
           <TemplateSelector />
           <PersonalDetailsForm />
           <ExperienceForm />

@@ -79,7 +79,7 @@ export function ExperienceForm() {
           <Button
             variant="ghost"
             onClick={addExperience}
-            className="text-highlight hover:underline flex items-center"
+            className="btn-electric-blue flex items-center rounded-md"
           >
             <Plus className="h-4 w-4 mr-1" /> Add
           </Button>
@@ -198,7 +198,7 @@ export function ExperienceForm() {
                   <div className="absolute right-2 top-2">
                     <Button
                       size="sm"
-                      className="text-xs bg-primary-accent text-background px-2 py-1 rounded-full"
+                      className="text-xs btn-electric-blue px-2 py-1 rounded-full"
                       onClick={() => handleImproveDescription(exp.id)}
                       disabled={improvingIds.includes(exp.id)}
                     >
