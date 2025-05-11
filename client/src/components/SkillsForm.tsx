@@ -69,7 +69,7 @@ export function SkillsForm() {
           <Button
             variant="ghost"
             onClick={toggleJobDescriptionModal}
-            className="text-primary-accent hover:underline flex items-center text-sm"
+            className="btn-electric-blue flex items-center text-sm rounded-md"
           >
             <FileSearch className="h-4 w-4 mr-1" /> Match to Job Description
           </Button>
@@ -98,7 +98,7 @@ export function SkillsForm() {
             </div>
             <Button 
               onClick={handleAddSkill}
-              className="bg-primary-accent text-background hover:bg-opacity-80 transition-colors px-3 py-2 rounded-md"
+              className="btn-electric-blue px-3 py-2 rounded-md"
             >
               <Plus className="h-4 w-4" />
             </Button>

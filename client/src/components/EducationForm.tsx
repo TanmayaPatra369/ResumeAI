@@ -30,7 +30,7 @@ export function EducationForm() {
           <Button
             variant="ghost"
             onClick={addEducation}
-            className="text-highlight hover:underline flex items-center"
+            className="btn-electric-blue flex items-center rounded-md"
           >
             <Plus className="h-4 w-4 mr-1" /> Add
           </Button>
