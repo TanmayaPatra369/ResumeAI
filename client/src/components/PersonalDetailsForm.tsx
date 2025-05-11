@@ -53,7 +53,7 @@ export function PersonalDetailsForm() {
 
   return (
     <Card className="bg-card-bg rounded-lg shadow-lg">
-      <CardContent className="pt-6">
+      <CardContent className="pt-6 px-6 pb-6">
         <h2 className="text-xl font-bold mb-4">Personal Details</h2>
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

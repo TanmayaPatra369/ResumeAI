@@ -1,10 +1,18 @@
-import { useEffect } from 'react';
-import { useLocation } from 'wouter';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { FileEdit, FileText, ChevronRight, Sparkles, Brain, File, Download } from 'lucide-react';
-import { useResumeStore } from '@/lib/resumeStore';
-import { useToast } from '@/hooks/use-toast';
+import { useEffect } from "react";
+import { useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  FileEdit,
+  FileText,
+  ChevronRight,
+  Sparkles,
+  Brain,
+  File,
+  Download,
+} from "lucide-react";
+import { useResumeStore } from "@/lib/resumeStore";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -25,16 +33,16 @@ export default function Home() {
       title: "Creating Resume",
       description: "Setting up your new resume...",
     });
-    
+
     // Initialize with defaults if needed
     if (!initialized) {
       initialize();
     }
-    
+
     // Use setTimeout to give visual feedback that something is happening
     setTimeout(() => {
       // Force navigation with window.location in case the setLocation isn't working
-      window.location.href = '/edit';
+      window.location.href = "/edit";
     }, 300);
   };
 
@@ -47,7 +55,7 @@ export default function Home() {
             <FileText className="h-6 w-6 text-highlight" />
             <h1 className="text-2xl md:text-3xl font-bold">ResumeAI</h1>
           </div>
-          <Button 
+          <Button
             onClick={handleCreateResume}
             className="bg-highlight text-background hover:bg-opacity-80 transition-colors"
           >
@@ -65,9 +73,10 @@ export default function Home() {
             <span className="text-highlight ml-2">AI-Powered</span> Resumes
           </h1>
           <p className="text-xl text-secondary-text max-w-2xl mx-auto mb-10">
-            Create professional resumes with intelligent suggestions, expert templates, and real-time feedback from our ML engine.
+            Create professional resumes with intelligent suggestions, expert
+            templates, and real-time feedback from our ML engine.
           </p>
-          <Button 
+          <Button
             onClick={handleCreateResume}
             size="lg"
             className="bg-highlight text-background hover:bg-opacity-80 transition-colors text-lg px-8 py-6"
@@ -80,8 +89,10 @@ export default function Home() {
       {/* Features Section */}
       <section className="py-16 bg-card px-6">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold mb-12 text-center">Intelligent Resume Building</h2>
-          
+          <h2 className="text-3xl font-bold mb-12 text-center">
+            Intelligent Resume Building
+          </h2>
+
           <div className="grid md:grid-cols-3 gap-10">
             <Card className="bg-background">
               <CardContent className="pt-6">
@@ -90,31 +101,38 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-bold mb-2">Smart Suggestions</h3>
                 <p className="text-secondary-text">
-                  Get intelligent recommendations for skills, job descriptions, and achievements based on industry standards.
+                  Get intelligent recommendations for skills, job descriptions,
+                  and achievements based on industry standards.
                 </p>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-background">
               <CardContent className="pt-6">
                 <div className="h-12 w-12 rounded-full bg-primary-accent bg-opacity-20 flex items-center justify-center mb-4">
                   <Brain className="h-6 w-6 text-primary-accent" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">Job Description Analysis</h3>
+                <h3 className="text-xl font-bold mb-2">
+                  Job Description Analysis
+                </h3>
                 <p className="text-secondary-text">
-                  Match your resume against job descriptions to identify skill gaps and tailor your application.
+                  Match your resume against job descriptions to identify skill
+                  gaps and tailor your application.
                 </p>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-background">
               <CardContent className="pt-6">
                 <div className="h-12 w-12 rounded-full bg-secondary-accent bg-opacity-20 flex items-center justify-center mb-4">
                   <File className="h-6 w-6 text-secondary-accent" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">Professional Templates</h3>
+                <h3 className="text-xl font-bold mb-2">
+                  Professional Templates
+                </h3>
                 <p className="text-secondary-text">
-                  Choose from a variety of professionally designed templates that stand out to recruiters.
+                  Choose from a variety of professionally designed templates
+                  that stand out to recruiters.
                 </p>
               </CardContent>
             </Card>
@@ -129,25 +147,27 @@ export default function Home() {
             Ready to Build a Resume That Gets Noticed?
           </h2>
           <p className="text-xl text-secondary-text max-w-2xl text-center mb-10">
-            Start creating your professional resume today with our ML-powered tools and stand out from the competition.
+            Start creating your professional resume today with our ML-powered
+            tools and stand out from the competition.
           </p>
           <div className="flex gap-4 flex-wrap justify-center">
-            <Button 
+            <Button
               onClick={handleCreateResume}
               size="lg"
-              className="bg-highlight text-background hover:bg-opacity-80 transition-colors"
+              className="bg-highlight text-background hover:bg-opacity-80 transition-colors opacity-0 hover:opacity-100"
             >
               Create New Resume
             </Button>
-            <Button 
+            <Button
               variant="outline"
               size="lg"
               className="border-highlight text-highlight hover:bg-highlight hover:bg-opacity-10 transition-colors"
               onClick={() => {
                 toast({
                   title: "LinkedIn Import",
-                  description: "LinkedIn import feature will be available in the next update.",
-                  variant: "default"
+                  description:
+                    "LinkedIn import feature will be available in the next update.",
+                  variant: "default",
                 });
               }}
             >
