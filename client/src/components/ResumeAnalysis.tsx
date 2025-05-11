@@ -7,7 +7,7 @@ import { analyzeResume } from '@/lib/ml';
 import { useToast } from '@/hooks/use-toast';
 
 export function ResumeAnalysis() {
-  const { currentResume } = useResumeStore();
+  const { currentResume, initialized } = useResumeStore();
   const { toast } = useToast();
   
   const [analysis, setAnalysis] = useState<{
@@ -20,10 +20,23 @@ export function ResumeAnalysis() {
 
   // Run analysis when component mounts or resume changes significantly
   useEffect(() => {
-    performAnalysis();
+    // Ensure resume is loaded and initialized before analyzing
+    if (initialized) {
+      performAnalysis();
+    }
     // This is a simplified dependency array - in a real app, you'd want to be more selective
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentResume.experience.length, currentResume.skills.length, currentResume.education.length]);
+  }, [currentResume.experience.length, currentResume.skills.length, currentResume.education.length, currentResume.personalDetails.summary]);
+  
+  // Force analysis when component mounts
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      performAnalysis();
+    }, 1000); // Small delay to ensure data is loaded
+    
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const performAnalysis = async () => {
     try {

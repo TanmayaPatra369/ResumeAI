@@ -106,11 +106,11 @@ export function ResumePreview({ previewRef }: ResumePreviewProps) {
       </div>
       
       <div 
-        className={`overflow-auto p-8 bg-white h-full scrollbar-hide ${isMobile && !showMobilePreview ? 'hidden' : ''}`}
+        className={`overflow-auto p-4 md:p-8 bg-white h-full scrollbar-hide ${isMobile && !showMobilePreview ? 'hidden' : ''}`}
         ref={contentRef}
       >
         {/* Resume Preview Content */}
-        <div className="resume-preview text-gray-800 max-w-[800px] mx-auto">
+        <div className="resume-preview text-gray-800 max-w-[800px] mx-auto scale-95 transform origin-top">
           {renderTemplate()}
         </div>
       </div>

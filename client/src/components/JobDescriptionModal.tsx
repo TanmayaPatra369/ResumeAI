@@ -120,22 +120,32 @@ export function JobDescriptionModal() {
             />
           </div>
           
-          <Button 
-            className="bg-highlight text-background hover:bg-opacity-80 transition-colors px-4 py-2 rounded-md flex items-center justify-center w-full" 
-            onClick={handleAnalyzeJobDescription}
-            disabled={isAnalyzing}
-          >
-            {isAnalyzing ? (
-              <>
-                <span className="animate-spin mr-2">⟳</span> Analyzing...
-              </>
-            ) : (
-              <>
-                <Search className="h-4 w-4 mr-2" />
-                Analyze Job Requirements
-              </>
-            )}
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button 
+              className="bg-highlight text-background hover:bg-opacity-80 transition-colors px-4 py-2 rounded-md flex items-center justify-center flex-1" 
+              onClick={handleAnalyzeJobDescription}
+              disabled={isAnalyzing}
+            >
+              {isAnalyzing ? (
+                <>
+                  <span className="animate-spin mr-2">⟳</span> Analyzing...
+                </>
+              ) : (
+                <>
+                  <Search className="h-4 w-4 mr-2" />
+                  Analyze Job Requirements
+                </>
+              )}
+            </Button>
+            
+            <Button 
+              className="bg-primary-accent text-background hover:bg-opacity-80 transition-colors px-4 py-2 rounded-md flex items-center justify-center" 
+              onClick={toggleJobDescriptionModal}
+              variant="outline"
+            >
+              Cancel
+            </Button>
+          </div>
           
           {jobDescription?.analysis && analysisComplete && (
             <div className="mt-6 bg-background p-4 rounded-md border border-border">

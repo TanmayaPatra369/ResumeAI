@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { FileEdit, FileText, ChevronRight, Sparkles, Brain, File, Download } from 'lucide-react';
 import { useResumeStore } from '@/lib/resumeStore';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -16,8 +17,10 @@ export default function Home() {
     }
   }, [initialize, initialized]);
 
-  const handleCreateResume = () => {
-    setLocation('/edit');
+  const handleCreateResume = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // Force navigation with window.location in case the setLocation isn't working
+    window.location.href = '/edit';
   };
 
   return (
@@ -125,7 +128,13 @@ export default function Home() {
               variant="outline"
               size="lg"
               className="border-highlight text-highlight hover:bg-highlight hover:bg-opacity-10 transition-colors"
-              onClick={() => window.open('https://www.linkedin.com/in/', '_blank')}
+              onClick={() => {
+                toast({
+                  title: "LinkedIn Import",
+                  description: "LinkedIn import feature will be available in the next update.",
+                  variant: "default"
+                });
+              }}
             >
               <Download className="h-4 w-4 mr-2" />
               Import from LinkedIn
