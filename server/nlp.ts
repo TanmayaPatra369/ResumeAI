@@ -13,32 +13,42 @@ const stemmer = natural.PorterStemmer;
 // Function to analyze job description and compare with resume
 export async function analyzeJobDescription(jobDescription: string, resumeContent: any) {
   try {
-    // Extract skills from job description
-    const jobSkills = extractSkills(jobDescription);
+    // Import OpenAI analyzer
+    const { analyzeJobWithAI } = require('./openai');
     
-    // Extract skills from resume
-    const resumeSkills = extractSkillsFromResume(resumeContent);
-    
-    // Find missing skills
-    const missingSkills = findMissingSkills(jobSkills, resumeSkills);
-    
-    // Calculate skills match percentage
-    const matchPercentage = calculateSkillsMatch(jobSkills, resumeSkills);
-    
-    // Extract experience requirements
-    const experienceRequirements = extractExperienceRequirements(jobDescription);
-    
-    // Compare with resume experience
-    const experienceComparison = compareExperience(experienceRequirements, resumeContent);
-    
-    return {
-      skillsMatch: {
-        percentage: matchPercentage,
-        matched: resumeSkills,
-        missing: missingSkills
-      },
-      experienceMatch: experienceComparison
-    };
+    try {
+      // Try using OpenAI for a more sophisticated analysis
+      return await analyzeJobWithAI(jobDescription, resumeContent);
+    } catch (aiError) {
+      console.error('Error with OpenAI analysis, falling back to basic analysis:', aiError);
+      
+      // Extract skills from job description
+      const jobSkills = extractSkills(jobDescription);
+      
+      // Extract skills from resume
+      const resumeSkills = extractSkillsFromResume(resumeContent);
+      
+      // Find missing skills
+      const missingSkills = findMissingSkills(jobSkills, resumeSkills);
+      
+      // Calculate skills match percentage
+      const matchPercentage = calculateSkillsMatch(jobSkills, resumeSkills);
+      
+      // Extract experience requirements
+      const experienceRequirements = extractExperienceRequirements(jobDescription);
+      
+      // Compare with resume experience
+      const experienceComparison = compareExperience(experienceRequirements, resumeContent);
+      
+      return {
+        skillsMatch: {
+          percentage: matchPercentage,
+          matched: resumeSkills,
+          missing: missingSkills
+        },
+        experienceMatch: experienceComparison
+      };
+    }
   } catch (error) {
     console.error('Error analyzing job description:', error);
     throw new Error('Failed to analyze job description');
@@ -46,53 +56,63 @@ export async function analyzeJobDescription(jobDescription: string, resumeConten
 }
 
 // Function to generate summary based on resume content
-export async function generateSummary(resumeContent: any) {
+export async function generateSummary(resumeContent: any, jobDescription?: string) {
   try {
-    // Extract key information from resume
-    const { personalDetails, experience, skills } = resumeContent;
+    // Import OpenAI summary generator
+    const { generateSummaryWithAI } = require('./openai');
     
-    // Find most recent job title and company
-    const latestExperience = experience && experience.length > 0 
-      ? experience.sort((a: any, b: any) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())[0]
-      : null;
-    
-    const jobTitle = personalDetails?.jobTitle || (latestExperience?.title || 'professional');
-    
-    // Count years of experience
-    const totalExperience = experience && experience.length > 0 
-      ? calculateTotalExperience(experience) 
-      : '';
-    
-    // Get top skills (first 3-5)
-    const topSkills = skills && skills.length > 0 
-      ? skills.slice(0, Math.min(5, skills.length)).join(', ') 
-      : '';
-    
-    // Generate summary
-    let summary = `${jobTitle} with ${totalExperience} of experience `;
-    
-    if (topSkills) {
-      summary += `specializing in ${topSkills}. `;
-    }
-    
-    if (latestExperience) {
-      summary += `Most recently worked at ${latestExperience.company} where `;
+    try {
+      // Try using OpenAI for a more professional summary
+      return await generateSummaryWithAI(resumeContent, jobDescription);
+    } catch (aiError) {
+      console.error('Error with OpenAI summary, falling back to basic summary:', aiError);
       
-      // Extract first achievement if available
-      if (latestExperience.description) {
-        const achievements = latestExperience.description.split('\n');
-        if (achievements.length > 0) {
-          const firstAchievement = achievements[0].replace(/^•\s*/, '');
-          summary += `I ${firstAchievement.toLowerCase()}.`;
+      // Extract key information from resume
+      const { personalDetails, experience, skills } = resumeContent;
+      
+      // Find most recent job title and company
+      const latestExperience = experience && experience.length > 0 
+        ? experience.sort((a: any, b: any) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())[0]
+        : null;
+      
+      const jobTitle = personalDetails?.jobTitle || (latestExperience?.title || 'professional');
+      
+      // Count years of experience
+      const totalExperience = experience && experience.length > 0 
+        ? calculateTotalExperience(experience) 
+        : '';
+      
+      // Get top skills (first 3-5)
+      const topSkills = skills && skills.length > 0 
+        ? skills.slice(0, Math.min(5, skills.length)).join(', ') 
+        : '';
+      
+      // Generate summary
+      let summary = `${jobTitle} with ${totalExperience} of experience `;
+      
+      if (topSkills) {
+        summary += `specializing in ${topSkills}. `;
+      }
+      
+      if (latestExperience) {
+        summary += `Most recently worked at ${latestExperience.company} where `;
+        
+        // Extract first achievement if available
+        if (latestExperience.description) {
+          const achievements = latestExperience.description.split('\n');
+          if (achievements.length > 0) {
+            const firstAchievement = achievements[0].replace(/^•\s*/, '');
+            summary += `I ${firstAchievement.toLowerCase()}.`;
+          } else {
+            summary += `I gained valuable industry experience.`;
+          }
         } else {
           summary += `I gained valuable industry experience.`;
         }
-      } else {
-        summary += `I gained valuable industry experience.`;
       }
+      
+      return summary;
     }
-    
-    return summary;
   } catch (error) {
     console.error('Error generating summary:', error);
     throw new Error('Failed to generate summary');
@@ -102,12 +122,26 @@ export async function generateSummary(resumeContent: any) {
 // Function to suggest skills based on job title and industry
 export async function suggestSkills(jobTitle: string, industry?: string, currentSkills?: string[]) {
   try {
+    // Import OpenAI skill suggestion
+    const { suggestSkillsWithAI } = require('./openai');
+    
     // Input validation
     if (!jobTitle || typeof jobTitle !== 'string') {
       console.warn('Invalid job title provided:', jobTitle);
       return getFallbackSkillSuggestions('', currentSkills);
     }
     
+    try {
+      // Try using OpenAI for more relevant skill suggestions
+      const aiSkills = await suggestSkillsWithAI(jobTitle, industry, currentSkills);
+      if (aiSkills && aiSkills.length > 0) {
+        return aiSkills;
+      }
+    } catch (aiError) {
+      console.error('Error with OpenAI skill suggestions, falling back to database:', aiError);
+    }
+    
+    // Fallback to database suggestions
     // Get skill suggestions from storage
     const suggestions = await storage.getSkillSuggestions(jobTitle, industry);
     
@@ -148,11 +182,25 @@ export async function suggestSkills(jobTitle: string, industry?: string, current
 // Function to improve description
 export async function improveDescription(description: string, type: string) {
   try {
+    // Import OpenAI description improver
+    const { improveDescriptionWithAI } = require('./openai');
+    
     // Check if description is empty
     if (!description.trim()) {
       return getDescriptionTemplate(type);
     }
     
+    try {
+      // Try using OpenAI for better description improvements
+      const aiImprovedDescription = await improveDescriptionWithAI(description, type);
+      if (aiImprovedDescription) {
+        return aiImprovedDescription;
+      }
+    } catch (aiError) {
+      console.error('Error with OpenAI description improvement, falling back to basic improvements:', aiError);
+    }
+    
+    // Fallback to basic improvement logic
     // Split description into bullets if it's not already
     const bullets = description.split('\n').map(line => line.trim());
     const improvedBullets = [];
