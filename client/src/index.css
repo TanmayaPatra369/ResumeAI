@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&family=Merriweather:wght@400;700&display=swap');
+
+:root {
+  --background: 240 10% 12% /* #1C1B23 */;
+  --foreground: 210 100% 97% /* #F5F7FA */;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 223 14% 71% /* #A9ADC1 */;
+  --popover: 240 10% 12% /* #1C1B23 */;
+  --popover-foreground: 210 100% 97% /* #F5F7FA */;
+  --card: 225 10% 17% /* #272833 */;
+  --card-foreground: 210 100% 97% /* #F5F7FA */;
+  --border: 225 9% 27% /* #3C3F4C */;
+  --input: 225 9% 27% /* #3C3F4C */;
+  --primary: 214 90% 76% /* #8AB4F8 */;
+  --primary-foreground: 210 100% 97% /* #F5F7FA */;
+  --secondary: 222 10% 21% /* #2B2E3D */;
+  --secondary-foreground: 223 14% 71% /* #A9ADC1 */;
+  --accent: 222 10% 21% /* #2B2E3D */;
+  --accent-foreground: 210 100% 97% /* #F5F7FA */;
+  --destructive: 3 75% 74% /* #F28B82 */;
+  --destructive-foreground: 210 100% 97% /* #F5F7FA */;
+  --ring: 214 90% 76% /* #8AB4F8 */;
+  --highlight: 165 100% 39% /* #00C896 */;
+  --radius: 0.5rem;
+
+  /* Chart colors */
+  --chart-1: 165 100% 39% /* #00C896 */;
+  --chart-2: 214 90% 76% /* #8AB4F8 */;
+  --chart-3: 3 75% 74% /* #F28B82 */;
+  --chart-4: 34 100% 75%;
+  --chart-5: 262 83% 58%;
+
+  /* Sidebar theme */
+  --sidebar-background: 240 10% 12% /* #1C1B23 */;
+  --sidebar-foreground: 210 100% 97% /* #F5F7FA */;
+  --sidebar-muted: 223 14% 71% /* #A9ADC1 */;
+  --sidebar-primary: 165 100% 39% /* #00C896 */;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 225 9% 27% /* #3C3F4C */;
+  --sidebar-accent-foreground: 210 100% 97% /* #F5F7FA */;
+  --sidebar-border: 225 9% 27% /* #3C3F4C */;
+  --sidebar-ring: 214 90% 76% /* #8AB4F8 */;
+}
+
+.dark {
+  --background: 240 10% 12% /* #1C1B23 */;
+  --foreground: 210 100% 97% /* #F5F7FA */;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 223 14% 71% /* #A9ADC1 */;
+  --popover: 240 10% 12% /* #1C1B23 */;
+  --popover-foreground: 210 100% 97% /* #F5F7FA */;
+  --card: 225 10% 17% /* #272833 */;
+  --card-foreground: 210 100% 97% /* #F5F7FA */;
+  --border: 225 9% 27% /* #3C3F4C */;
+  --input: 225 9% 27% /* #3C3F4C */;
+  --primary: 214 90% 76% /* #8AB4F8 */;
+  --primary-foreground: 210 100% 97% /* #F5F7FA */;
+  --secondary: 222 10% 21% /* #2B2E3D */;
+  --secondary-foreground: 223 14% 71% /* #A9ADC1 */;
+  --accent: 222 10% 21% /* #2B2E3D */;
+  --accent-foreground: 210 100% 97% /* #F5F7FA */;
+  --destructive: 3 75% 74% /* #F28B82 */;
+  --destructive-foreground: 210 100% 97% /* #F5F7FA */;
+  --ring: 214 90% 76% /* #8AB4F8 */;
+  --highlight: 165 100% 39% /* #00C896 */;
+  --radius: 0.5rem;
+
+  /* Chart colors */
+  --chart-1: 165 100% 39% /* #00C896 */;
+  --chart-2: 214 90% 76% /* #8AB4F8 */;
+  --chart-3: 3 75% 74% /* #F28B82 */;
+  --chart-4: 34 100% 75%;
+  --chart-5: 262 83% 58%;
+
+  /* Sidebar theme */
+  --sidebar-background: 240 10% 12% /* #1C1B23 */;
+  --sidebar-foreground: 210 100% 97% /* #F5F7FA */;
+  --sidebar-muted: 223 14% 71% /* #A9ADC1 */;
+  --sidebar-primary: 165 100% 39% /* #00C896 */;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 225 9% 27% /* #3C3F4C */;
+  --sidebar-accent-foreground: 210 100% 97% /* #F5F7FA */;
+  --sidebar-border: 225 9% 27% /* #3C3F4C */;
+  --sidebar-ring: 214 90% 76% /* #8AB4F8 */;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+/* Resume preview styles */
+.resume-preview {
+  font-family: 'Merriweather', serif;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.suggestion-tag {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Specific styles for the form sections */
+.section-spacing {
+  margin-bottom: 24px;
+}
+
+/* Preview border effect when printing */
+@media print {
+  .resume-preview {
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    border: none;
+  }
+}
