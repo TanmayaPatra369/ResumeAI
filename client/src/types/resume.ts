@@ -67,6 +67,7 @@ export interface ResumeScore {
   score: number;
   improvements: string[];
   grammarIssues: string[];
+  fallback?: boolean;
 }
 
 export interface Resume {

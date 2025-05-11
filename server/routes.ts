@@ -184,7 +184,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(scoreResult);
     } catch (error) {
       console.error("Error scoring resume:", error);
-      res.status(500).json({ message: "Error scoring resume" });
+      
+      // If it's a quota error, send a more specific error message
+      if (error.message && error.message.includes("quota")) {
+        // Return a clear error that the client can handle
+        return res.status(429).json({ 
+          error: "API quota exceeded", 
+          message: "OpenAI API quota limit reached. Using fallback analysis.",
+          fallback: true
+        });
+      }
+      
+      res.status(500).json({ message: "Error scoring resume", fallback: true });
     }
   });
 

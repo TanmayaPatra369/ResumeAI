@@ -14,9 +14,11 @@ export function ResumeAnalysis() {
     score: number;
     improvements: string[];
     grammarIssues: string[];
+    fallback?: boolean;
   }>({ score: 0, improvements: [], grammarIssues: [] });
   
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [usingFallback, setUsingFallback] = useState(false);
 
   // Run analysis when component mounts or resume changes significantly
   useEffect(() => {
@@ -41,16 +43,27 @@ export function ResumeAnalysis() {
   const performAnalysis = async () => {
     try {
       setIsAnalyzing(true);
-      // Artificial delay to simulate ML processing
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      setUsingFallback(false);
       
       const result = await analyzeResume(currentResume);
       setAnalysis(result);
+      
+      // Check if we're using fallback analysis
+      if (result.fallback) {
+        setUsingFallback(true);
+        toast({
+          title: "Using Basic Analysis",
+          description: "AI-powered analysis is currently unavailable. Using basic analysis instead.",
+          variant: "default"
+        });
+      }
     } catch (error) {
+      console.error('Error analyzing resume:', error);
+      setUsingFallback(true);
       toast({
-        title: "Analysis Error",
-        description: "Failed to analyze your resume. Please try again.",
-        variant: "destructive"
+        title: "Analysis Notice",
+        description: "Using basic resume analysis due to API limitations.",
+        variant: "default"
       });
     } finally {
       setIsAnalyzing(false);
@@ -62,7 +75,10 @@ export function ResumeAnalysis() {
       <CardContent className="pt-6 px-6 pb-6">
         <h2 className="text-xl font-bold mb-4 flex items-center">
           <Activity className="h-5 w-5 mr-2 text-highlight" />
-          AI Resume Analysis
+          {usingFallback ? 'Basic Resume Analysis' : 'AI Resume Analysis'}
+          {usingFallback && (
+            <span className="ml-2 px-2 py-0.5 text-xs bg-yellow-400/10 text-yellow-500 rounded-full">Basic Mode</span>
+          )}
         </h2>
         
         {isAnalyzing ? (
