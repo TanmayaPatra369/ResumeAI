@@ -124,7 +124,8 @@ export const analyzeResume = async (resume: Resume) => {
     return {
       score: aiScore.score || 0,
       improvements: Array.isArray(aiScore.improvements) ? aiScore.improvements : [],
-      grammarIssues: Array.isArray(aiScore.grammarIssues) ? aiScore.grammarIssues : []
+      grammarIssues: Array.isArray(aiScore.grammarIssues) ? aiScore.grammarIssues : [],
+      fallback: aiScore.fallback || false
     };
   } catch (error) {
     console.error('Error scoring resume with AI:', error);
@@ -173,6 +174,10 @@ export const analyzeResume = async (resume: Resume) => {
     // Calculate final score (start with 100 and subtract penalties)
     score.score = Math.max(0, 100 - Math.abs(score.score));
     
-    return score;
+    // Add the fallback flag
+    return {
+      ...score,
+      fallback: true
+    };
   }
 };
