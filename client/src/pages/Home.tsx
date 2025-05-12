@@ -154,7 +154,7 @@ export default function Home() {
             <Button
               onClick={handleCreateResume}
               size="lg"
-              className="bg-highlight text-background hover:bg-opacity-80 transition-colors opacity-0 hover:opacity-100"
+              className="bg-highlight text-background hover:bg-opacity-80 transition-colors"
             >
               Create New Resume
             </Button>
