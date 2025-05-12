@@ -66,9 +66,9 @@ async function callPerplexityAPI(
 
     const data: PerplexityResponse = await response.json();
     return data.choices[0].message.content.trim();
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error calling Perplexity API:', error);
-    throw new Error(`Failed to get response from Perplexity: ${error.message}`);
+    throw new Error(`Failed to get response from Perplexity: ${error.message || 'Unknown error'}`);
   }
 }
 

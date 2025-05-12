@@ -21,40 +21,45 @@ const stemmer = natural.PorterStemmer;
 // Function to analyze job description and compare with resume
 export async function analyzeJobDescription(jobDescription: string, resumeContent: any) {
   try {
-    // Use OpenAI analyzer
-    
+    // Try using Perplexity for a sophisticated analysis
     try {
-      // Try using OpenAI for a more sophisticated analysis
-      return await analyzeJobWithAI(jobDescription, resumeContent);
-    } catch (aiError) {
-      console.error('Error with OpenAI analysis, falling back to basic analysis:', aiError);
+      return await analyzeJobWithPerplexity(jobDescription, resumeContent);
+    } catch (perplexityError) {
+      console.error('Error with Perplexity analysis, trying OpenAI:', perplexityError);
       
-      // Extract skills from job description
-      const jobSkills = extractSkills(jobDescription);
-      
-      // Extract skills from resume
-      const resumeSkills = extractSkillsFromResume(resumeContent);
-      
-      // Find missing skills
-      const missingSkills = findMissingSkills(jobSkills, resumeSkills);
-      
-      // Calculate skills match percentage
-      const matchPercentage = calculateSkillsMatch(jobSkills, resumeSkills);
-      
-      // Extract experience requirements
-      const experienceRequirements = extractExperienceRequirements(jobDescription);
-      
-      // Compare with resume experience
-      const experienceComparison = compareExperience(experienceRequirements, resumeContent);
-      
-      return {
-        skillsMatch: {
-          percentage: matchPercentage,
-          matched: resumeSkills,
-          missing: missingSkills
-        },
-        experienceMatch: experienceComparison
-      };
+      // Fall back to OpenAI
+      try {
+        return await analyzeJobWithAI(jobDescription, resumeContent);
+      } catch (aiError) {
+        console.error('Error with OpenAI analysis, falling back to basic analysis:', aiError);
+        
+        // Extract skills from job description
+        const jobSkills = extractSkills(jobDescription);
+        
+        // Extract skills from resume
+        const resumeSkills = extractSkillsFromResume(resumeContent);
+        
+        // Find missing skills
+        const missingSkills = findMissingSkills(jobSkills, resumeSkills);
+        
+        // Calculate skills match percentage
+        const matchPercentage = calculateSkillsMatch(jobSkills, resumeSkills);
+        
+        // Extract experience requirements
+        const experienceRequirements = extractExperienceRequirements(jobDescription);
+        
+        // Compare with resume experience
+        const experienceComparison = compareExperience(experienceRequirements, resumeContent);
+        
+        return {
+          skillsMatch: {
+            percentage: matchPercentage,
+            matched: resumeSkills,
+            missing: missingSkills
+          },
+          experienceMatch: experienceComparison
+        };
+      }
     }
   } catch (error) {
     console.error('Error analyzing job description:', error);
@@ -65,59 +70,64 @@ export async function analyzeJobDescription(jobDescription: string, resumeConten
 // Function to generate summary based on resume content
 export async function generateSummary(resumeContent: any, jobDescription?: string) {
   try {
-    // Use OpenAI summary generator
-    
+    // Try using Perplexity first
     try {
-      // Try using OpenAI for a more professional summary
-      return await generateSummaryWithAI(resumeContent, jobDescription);
-    } catch (aiError) {
-      console.error('Error with OpenAI summary, falling back to basic summary:', aiError);
+      return await generateSummaryWithPerplexity(resumeContent, jobDescription);
+    } catch (perplexityError) {
+      console.error('Error with Perplexity summary, trying OpenAI:', perplexityError);
       
-      // Extract key information from resume
-      const { personalDetails, experience, skills } = resumeContent;
-      
-      // Find most recent job title and company
-      const latestExperience = experience && experience.length > 0 
-        ? experience.sort((a: any, b: any) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())[0]
-        : null;
-      
-      const jobTitle = personalDetails?.jobTitle || (latestExperience?.title || 'professional');
-      
-      // Count years of experience
-      const totalExperience = experience && experience.length > 0 
-        ? calculateTotalExperience(experience) 
-        : '';
-      
-      // Get top skills (first 3-5)
-      const topSkills = skills && skills.length > 0 
-        ? skills.slice(0, Math.min(5, skills.length)).join(', ') 
-        : '';
-      
-      // Generate summary
-      let summary = `${jobTitle} with ${totalExperience} of experience `;
-      
-      if (topSkills) {
-        summary += `specializing in ${topSkills}. `;
-      }
-      
-      if (latestExperience) {
-        summary += `Most recently worked at ${latestExperience.company} where `;
+      // Fall back to OpenAI
+      try {
+        return await generateSummaryWithAI(resumeContent, jobDescription);
+      } catch (aiError) {
+        console.error('Error with OpenAI summary, falling back to basic summary:', aiError);
         
-        // Extract first achievement if available
-        if (latestExperience.description) {
-          const achievements = latestExperience.description.split('\n');
-          if (achievements.length > 0) {
-            const firstAchievement = achievements[0].replace(/^•\s*/, '');
-            summary += `I ${firstAchievement.toLowerCase()}.`;
+        // Extract key information from resume
+        const { personalDetails, experience, skills } = resumeContent;
+        
+        // Find most recent job title and company
+        const latestExperience = experience && experience.length > 0 
+          ? experience.sort((a: any, b: any) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())[0]
+          : null;
+        
+        const jobTitle = personalDetails?.jobTitle || (latestExperience?.title || 'professional');
+        
+        // Count years of experience
+        const totalExperience = experience && experience.length > 0 
+          ? calculateTotalExperience(experience) 
+          : '';
+        
+        // Get top skills (first 3-5)
+        const topSkills = skills && skills.length > 0 
+          ? skills.slice(0, Math.min(5, skills.length)).join(', ') 
+          : '';
+        
+        // Generate summary
+        let summary = `${jobTitle} with ${totalExperience} of experience `;
+        
+        if (topSkills) {
+          summary += `specializing in ${topSkills}. `;
+        }
+        
+        if (latestExperience) {
+          summary += `Most recently worked at ${latestExperience.company} where `;
+          
+          // Extract first achievement if available
+          if (latestExperience.description) {
+            const achievements = latestExperience.description.split('\n');
+            if (achievements.length > 0) {
+              const firstAchievement = achievements[0].replace(/^•\s*/, '');
+              summary += `I ${firstAchievement.toLowerCase()}.`;
+            } else {
+              summary += `I gained valuable industry experience.`;
+            }
           } else {
             summary += `I gained valuable industry experience.`;
           }
-        } else {
-          summary += `I gained valuable industry experience.`;
         }
+        
+        return summary;
       }
-      
-      return summary;
     }
   } catch (error) {
     console.error('Error generating summary:', error);
@@ -128,23 +138,30 @@ export async function generateSummary(resumeContent: any, jobDescription?: strin
 // Function to suggest skills based on job title and industry
 export async function suggestSkills(jobTitle: string, industry?: string, currentSkills?: string[]) {
   try {
-    // Import OpenAI skill suggestion - already imported at top level
-    // const { suggestSkillsWithAI } = require('./openai');
-    
     // Input validation
     if (!jobTitle || typeof jobTitle !== 'string') {
       console.warn('Invalid job title provided:', jobTitle);
       return getFallbackSkillSuggestions('', currentSkills);
     }
     
+    // Try using Perplexity for skill suggestions
     try {
-      // Try using OpenAI for more relevant skill suggestions
-      const aiSkills = await suggestSkillsWithAI(jobTitle, industry, currentSkills);
-      if (aiSkills && aiSkills.length > 0) {
-        return aiSkills;
+      const perplexitySkills = await suggestSkillsWithPerplexity(jobTitle, industry, currentSkills);
+      if (perplexitySkills && perplexitySkills.length > 0) {
+        return perplexitySkills;
       }
-    } catch (aiError) {
-      console.error('Error with OpenAI skill suggestions, falling back to database:', aiError);
+    } catch (perplexityError) {
+      console.error('Error with Perplexity skill suggestions, trying OpenAI:', perplexityError);
+      
+      // Fall back to OpenAI
+      try {
+        const aiSkills = await suggestSkillsWithAI(jobTitle, industry, currentSkills);
+        if (aiSkills && aiSkills.length > 0) {
+          return aiSkills;
+        }
+      } catch (aiError) {
+        console.error('Error with OpenAI skill suggestions, falling back to database:', aiError);
+      }
     }
     
     // Fallback to database suggestions
@@ -188,21 +205,29 @@ export async function suggestSkills(jobTitle: string, industry?: string, current
 // Function to improve description
 export async function improveDescription(description: string, type: string) {
   try {
-    // Use OpenAI description improver
-    
     // Check if description is empty
     if (!description.trim()) {
       return getDescriptionTemplate(type);
     }
     
+    // Try using Perplexity for description improvements
     try {
-      // Try using OpenAI for better description improvements
-      const aiImprovedDescription = await improveDescriptionWithAI(description, type);
-      if (aiImprovedDescription) {
-        return aiImprovedDescription;
+      const perplexityImprovedDescription = await improveDescriptionWithPerplexity(description, type);
+      if (perplexityImprovedDescription) {
+        return perplexityImprovedDescription;
       }
-    } catch (aiError) {
-      console.error('Error with OpenAI description improvement, falling back to basic improvements:', aiError);
+    } catch (perplexityError) {
+      console.error('Error with Perplexity description improvement, trying OpenAI:', perplexityError);
+      
+      // Fall back to OpenAI
+      try {
+        const aiImprovedDescription = await improveDescriptionWithAI(description, type);
+        if (aiImprovedDescription) {
+          return aiImprovedDescription;
+        }
+      } catch (aiError) {
+        console.error('Error with OpenAI description improvement, falling back to basic improvements:', aiError);
+      }
     }
     
     // Fallback to basic improvement logic

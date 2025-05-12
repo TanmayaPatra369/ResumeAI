@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { analyzeJobDescription, generateSummary, suggestSkills, improveDescription } from "./nlp";
 import { scoreResumeWithAI } from "./openai";
+import { scoreResumeWithPerplexity } from "./perplexity";
 import { z } from "zod";
 import { insertResumeSchema, insertJobAnalysisSchema } from "@shared/schema";
 
@@ -219,13 +220,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(400).json({ message: "Resume data is required" });
     }
     
-    // The scoreResumeWithAI function now handles all errors internally and returns a fallback
-    // response if the OpenAI API fails, so we don't need to catch errors anymore
-    const scoreResult = await scoreResumeWithAI(resume);
+    let scoreResult;
+    
+    try {
+      // First try with Perplexity API
+      scoreResult = await scoreResumeWithPerplexity(resume);
+    } catch (perplexityError) {
+      console.error('Error scoring resume with Perplexity:', perplexityError);
+      
+      try {
+        // Fall back to OpenAI
+        scoreResult = await scoreResumeWithAI(resume);
+      } catch (aiError) {
+        console.error('Error scoring resume with OpenAI:', aiError);
+        
+        // Default fallback response
+        scoreResult = {
+          score: 60,
+          improvements: [
+            "Add more quantifiable achievements to your experience descriptions",
+            "Include more relevant skills for your target roles",
+            "Ensure your job titles are clear and industry-standard"
+          ],
+          grammarIssues: [],
+          fallback: true
+        };
+      }
+    }
     
     // Ensure we have valid data before sending response
     const validatedResult = {
-      score: typeof scoreResult.score === 'number' ? scoreResult.score : 50,
+      score: typeof scoreResult.score === 'number' ? scoreResult.score : 60,
       improvements: Array.isArray(scoreResult.improvements) ? scoreResult.improvements : [
         "Add more details to your work experiences",
         "Quantify your achievements with numbers", 
