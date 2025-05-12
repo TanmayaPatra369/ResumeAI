@@ -1,6 +1,13 @@
 import natural from 'natural';
 import { storage } from './storage';
 import { analyzeJobWithAI, generateSummaryWithAI, suggestSkillsWithAI, improveDescriptionWithAI } from './openai';
+import { 
+  analyzeJobWithPerplexity, 
+  generateSummaryWithPerplexity, 
+  suggestSkillsWithPerplexity, 
+  improveDescriptionWithPerplexity,
+  scoreResumeWithPerplexity
+} from './perplexity';
 
 // Tokenizer for breaking text into words
 const tokenizer = new natural.WordTokenizer();
