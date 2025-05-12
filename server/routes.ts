@@ -219,46 +219,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(400).json({ message: "Resume data is required" });
     }
     
-    try {
-      const scoreResult = await scoreResumeWithAI(resume);
-      res.json(scoreResult);
-    } catch (error: any) {
-      console.error("Error scoring resume:", error);
-      
-      // Check for various types of OpenAI API errors
-      const errorMessage = error?.message || "";
-      const isQuotaError = errorMessage.includes("quota") || 
-                          errorMessage.includes("rate limit") || 
-                          (error?.code === "insufficient_quota");
-      
-      if (isQuotaError) {
-        // Return a clear error that the client can handle
-        return res.status(429).json({ 
-          score: 0,
-          improvements: [
-            "Add more details to your work experiences",
-            "Quantify your achievements with numbers", 
-            "Include relevant skills for your industry"
-          ],
-          grammarIssues: [],
-          fallback: true,
-          error: "API quota exceeded",
-          message: "Using basic analysis mode due to API limitations."
-        });
-      }
-      
-      // Return usable fallback results for any error
-      res.status(200).json({
-        score: 0,
-        improvements: [
-          "Add more details to your work experiences",
-          "Quantify your achievements with numbers", 
-          "Include relevant skills for your industry"
-        ],
-        grammarIssues: [],
-        fallback: true
-      });
-    }
+    // The scoreResumeWithAI function now handles all errors internally and returns a fallback
+    // response if the OpenAI API fails, so we don't need to catch errors anymore
+    const scoreResult = await scoreResumeWithAI(resume);
+    
+    // Ensure we have valid data before sending response
+    const validatedResult = {
+      score: typeof scoreResult.score === 'number' ? scoreResult.score : 50,
+      improvements: Array.isArray(scoreResult.improvements) ? scoreResult.improvements : [
+        "Add more details to your work experiences",
+        "Quantify your achievements with numbers", 
+        "Include relevant skills for your industry"
+      ],
+      grammarIssues: Array.isArray(scoreResult.grammarIssues) ? scoreResult.grammarIssues : [],
+      fallback: scoreResult.fallback || false
+    };
+    
+    res.status(200).json(validatedResult);
   });
 
   const httpServer = createServer(app);
