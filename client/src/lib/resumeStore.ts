@@ -123,23 +123,23 @@ export const useResumeStore = create<ResumeState>((set) => ({
     defaultResume.experience = [
       {
         id: uuidv4(),
-        title: 'Data Scientist',
-        company: 'TechCorp Inc.',
-        location: 'Seattle, WA',
+        title: 'Senior Data Scientist',
+        company: 'Tech Innovations India Pvt. Ltd.',
+        location: 'Bengaluru, Karnataka',
         startDate: '2019-06',
         endDate: '2023-01',
         current: false,
-        description: '• Led a team of 3 data analysts to develop predictive models that increased user retention by 27%\n• Implemented machine learning pipelines using Python, TensorFlow and scikit-learn\n• Created interactive dashboards with Tableau that enabled stakeholders to make data-driven decisions'
+        description: '• **Led a team of 5 analysts** to develop ML models that increased customer retention by 32%\n• **Implemented** machine learning pipelines using Python, TensorFlow and scikit-learn for predictive analytics\n• **Collaborated** with cross-functional teams across Bengaluru and Hyderabad offices to optimize data infrastructure\n• **Reduced** processing time by 40% through optimization of ETL pipelines'
       },
       {
         id: uuidv4(),
         title: 'Data Analyst',
-        company: 'DataFlow Analytics',
-        location: 'Portland, OR',
+        company: 'Infosys',
+        location: 'Pune, Maharashtra',
         startDate: '2017-08',
         endDate: '2019-05',
         current: false,
-        description: '• Analyzed customer data and identified trends that increased sales by 15%\n• Built SQL queries to extract and transform data from multiple sources\n• Created weekly reports for executive leadership team'
+        description: '• **Analyzed** customer data for a major telecom client and identified trends that increased ARPU by 18%\n• **Built** complex SQL queries to extract and transform data from multiple enterprise sources\n• **Created** weekly dashboards for executive leadership using Power BI and Tableau\n• **Mentored** 3 junior analysts, conducting regular knowledge-sharing sessions'
       }
     ];
     
@@ -147,40 +147,56 @@ export const useResumeStore = create<ResumeState>((set) => ({
     defaultResume.education = [
       {
         id: uuidv4(),
-        degree: 'MS in Data Science',
-        institution: 'University of Washington',
-        location: 'Seattle, WA',
-        startDate: '2015-09',
-        endDate: '2017-06',
+        degree: 'M.Tech in Computer Science (Data Science Specialization)',
+        institution: 'Indian Institute of Technology, Bombay',
+        location: 'Mumbai, Maharashtra',
+        startDate: '2015-07',
+        endDate: '2017-05',
         current: false,
-        description: 'Thesis: "Predictive Modeling for Customer Behavior Analysis in E-commerce Platforms"\nGPA: 3.85/4.0, Dean\'s List'
+        description: 'Thesis: "Deep Learning Applications for Indian Language Processing"\nCGPA: 9.2/10, Merit Scholarship Recipient\nCourses: Advanced Machine Learning, Big Data Analytics, Cloud Computing'
+      },
+      {
+        id: uuidv4(),
+        degree: 'B.Tech in Computer Science and Engineering',
+        institution: 'Vellore Institute of Technology',
+        location: 'Vellore, Tamil Nadu',
+        startDate: '2011-08',
+        endDate: '2015-05',
+        current: false,
+        description: 'CGPA: 8.7/10\nTechnical Secretary of Computer Science Association\nWinner, National Coding Hackathon 2014'
       }
     ];
     
     // Add example skills
     defaultResume.skills = [
-      'Python', 'Machine Learning', 'SQL', 'Pandas', 'scikit-learn', 'R', 'Tableau', 'Statistical Analysis'
+      'Python', 'Machine Learning', 'SQL', 'PySpark', 'TensorFlow', 'AWS', 'Power BI', 'Java', 'Natural Language Processing', 'Computer Vision'
     ];
     
     // Add example project
     defaultResume.projects = [
       {
         id: uuidv4(),
-        name: 'Customer Churn Prediction Model',
-        link: 'https://github.com/alexjohnson/churn-prediction',
-        description: 'Developed a machine learning model to predict customer churn for a telecom company. Achieved 87% accuracy using ensemble methods and created an interactive dashboard for visualizing results.'
+        name: 'Multi-lingual Chatbot for Banking',
+        link: 'https://github.com/arjunpatel/nlp-banking-bot',
+        description: '• **Developed** a customer service chatbot supporting Hindi, English, and Tamil for a major Indian private bank\n• **Implemented** NLP techniques to understand and process Indian language queries with 92% accuracy\n• **Integrated** with bank\'s core banking system and reduced customer service load by 35%\n• **Technologies used**: Python, TensorFlow, NLTK, FastAPI, AWS, Docker'
+      },
+      {
+        id: uuidv4(),
+        name: 'Supply Chain Optimization for E-commerce',
+        link: 'https://github.com/arjunpatel/supply-chain-ml',
+        description: '• **Built** an ML model to optimize inventory and logistics for an e-commerce platform operating in 25+ Indian cities\n• **Reduced** delivery time by 28% and warehouse costs by 15% through intelligent demand forecasting\n• **Presented** findings at National Data Science Conference 2022 in Hyderabad\n• **Technologies used**: Python, scikit-learn, Pandas, PostgreSQL, Tableau'
       }
     ];
     
     // Add example personal details
     defaultResume.personalDetails = {
-      name: 'Alex Johnson',
-      jobTitle: 'Data Scientist',
-      summary: 'Data scientist with 4+ years of experience in machine learning, statistical analysis, and data visualization. Skilled in Python, R, and SQL with a proven track record of delivering insights that drive business decisions.',
-      email: 'alex.johnson@email.com',
-      phone: '(555) 123-4567',
-      linkedin: 'linkedin.com/in/alexjohnson',
-      location: 'Seattle, WA'
+      name: 'Arjun Patel',
+      jobTitle: 'Senior Data Scientist',
+      summary: 'Results-driven Data Scientist with 6+ years of experience in machine learning, statistical analysis, and data engineering in the Indian tech industry. Specialized in developing AI solutions for financial services and e-commerce sectors with expertise in multilingual NLP for Indian languages. Proven track record of delivering data-driven solutions that improve operational efficiency and business outcomes.',
+      email: 'arjun.patel@email.com',
+      phone: '+91 98765 43210',
+      linkedin: 'linkedin.com/in/arjunpatel',
+      location: 'Bengaluru, Karnataka'
     };
     
     return {

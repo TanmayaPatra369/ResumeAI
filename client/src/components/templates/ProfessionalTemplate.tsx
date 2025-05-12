@@ -105,7 +105,9 @@ export function ProfessionalTemplate({ resume }: ProfessionalTemplateProps) {
                 <ul className="list-disc ml-5 mt-1 text-gray-700 text-sm">
                   {exp.description.split('\n').map((bullet, idx) => (
                     <li key={idx}>
-                      {bullet.replace(/^[•\-*]\s*/, '')}
+                      {bullet.replace(/^[•\-*]\s*/, '').split(/\*\*(.*?)\*\*/).map((part, partIdx) => 
+                        partIdx % 2 === 0 ? part : <strong key={partIdx}>{part}</strong>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -189,7 +191,15 @@ export function ProfessionalTemplate({ resume }: ProfessionalTemplateProps) {
               </div>
               
               {project.description && (
-                <p className="text-gray-700 text-sm mt-1">{project.description}</p>
+                <ul className="list-disc ml-5 mt-1 text-gray-700 text-sm">
+                  {project.description.split('\n').map((bullet, idx) => (
+                    <li key={idx}>
+                      {bullet.replace(/^[•\-*]\s*/, '').split(/\*\*(.*?)\*\*/).map((part, partIdx) => 
+                        partIdx % 2 === 0 ? part : <strong key={partIdx}>{part}</strong>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
           ))}
