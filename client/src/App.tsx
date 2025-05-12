@@ -8,6 +8,8 @@ import EditResume from "@/pages/EditResume";
 import { useEffect } from "react";
 import { useResumeStore } from "./lib/resumeStore";
 
+//This is the main entry point of the application
+
 function Router() {
   return (
     <Switch>
