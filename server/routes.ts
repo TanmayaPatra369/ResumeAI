@@ -194,14 +194,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error improving description:", error);
       
       // Basic improvements for different types of content
-      const prefixes = {
+      const prefixes: Record<string, string> = {
         'experience': '• Led a team of developers to successfully deliver the project on time and within budget.\n• Improved system performance by 30% through code optimization.\n• Collaborated with cross-functional teams to implement new features.',
         'project': '• Built a responsive web application using React and Node.js.\n• Implemented user authentication and authorization features.\n• Designed and optimized database schema for improved performance.',
         'summary': 'Dedicated professional with experience in developing scalable applications. Skilled in problem-solving and collaborating with cross-functional teams to deliver high-quality solutions.'
       };
       
       // Return basic improvement with the original text if type doesn't match
-      const fallbackImprovement = prefixes[type] || description;
+      const fallbackImprovement = type in prefixes ? prefixes[type] : description;
       
       res.status(200).json({ 
         improved: fallbackImprovement,

@@ -185,38 +185,37 @@ export function ExperienceForm() {
               </div>
               
               <div className="mb-4">
-                <Label htmlFor={`description-${exp.id}`} className="block text-secondary-text mb-1">
-                  Description
-                </Label>
-                <div className="relative">
-                  <Textarea
-                    id={`description-${exp.id}`}
-                    className="w-full bg-background border border-border rounded-md px-3 py-2 focus:outline-none focus:border-primary-accent transition-colors min-h-[100px] resize-none"
-                    value={exp.description}
-                    onChange={(e) => handleInputChange(exp.id, 'description', e.target.value)}
-                    placeholder="• Led a team of X members to implement Y solution
+                <div className="flex justify-between items-center mb-1">
+                  <Label htmlFor={`description-${exp.id}`} className="block text-secondary-text">
+                    Description
+                  </Label>
+                  <Button
+                    size="sm"
+                    className="text-xs btn-electric-blue px-2 py-1 rounded-full"
+                    onClick={() => handleImproveDescription(exp.id)}
+                    disabled={improvingIds.includes(exp.id)}
+                  >
+                    {improvingIds.includes(exp.id) ? (
+                      <span className="flex items-center">
+                        <span className="animate-spin mr-1">⟳</span> Enhancing...
+                      </span>
+                    ) : (
+                      <span className="flex items-center">
+                        <Sparkles className="h-3 w-3 mr-1" /> Enhance
+                      </span>
+                    )}
+                  </Button>
+                </div>
+                
+                <Textarea
+                  id={`description-${exp.id}`}
+                  className="w-full bg-background border border-border rounded-md px-3 py-2 focus:outline-none focus:border-primary-accent transition-colors min-h-[100px] resize-none"
+                  value={exp.description}
+                  onChange={(e) => handleInputChange(exp.id, 'description', e.target.value)}
+                  placeholder="• Led a team of X members to implement Y solution
 • Developed and maintained Z, resulting in A% improvement
 • Collaborated with cross-functional teams to deliver B on time and under budget"
-                  />
-                  <div className="absolute right-2 top-2">
-                    <Button
-                      size="sm"
-                      className="text-xs btn-electric-blue px-2 py-1 rounded-full"
-                      onClick={() => handleImproveDescription(exp.id)}
-                      disabled={improvingIds.includes(exp.id)}
-                    >
-                      {improvingIds.includes(exp.id) ? (
-                        <span className="flex items-center">
-                          <span className="animate-spin mr-1">⟳</span> Enhancing...
-                        </span>
-                      ) : (
-                        <span className="flex items-center">
-                          <Sparkles className="h-3 w-3 mr-1" /> Enhance
-                        </span>
-                      )}
-                    </Button>
-                  </div>
-                </div>
+                />
                 
                 <div className="mt-2 text-sm text-highlight flex items-center">
                   <Lightbulb className="h-3 w-3 mr-1" />
