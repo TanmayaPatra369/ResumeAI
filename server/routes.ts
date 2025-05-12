@@ -189,8 +189,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     
     try {
-      const improved = await improveDescription(description, type);
-      res.json({ improved });
+      const improvedDescription = await improveDescription(description, type);
+      
+      // Ensure we're returning a string
+      let finalImprovement = typeof improvedDescription === 'string' 
+        ? improvedDescription 
+        : typeof improvedDescription === 'object' && improvedDescription !== null
+          ? JSON.stringify(improvedDescription)
+          : description;
+      
+      // Remove Markdown formatting that might come from the Perplexity API
+      finalImprovement = finalImprovement
+        .replace(/\*\*/g, '')  // Remove bold markdown
+        .replace(/\n\n/g, '\n') // Normalize multiple newlines
+        .replace(/^- /gm, '• ') // Convert dashes to bullet points
+        .trim();
+      
+      res.json({ improved: finalImprovement });
     } catch (error: any) {
       console.error("Error improving description:", error);
       

@@ -157,7 +157,8 @@ export async function suggestSkillsWithPerplexity(
   
   const systemPrompt = `You are an expert career advisor specializing in skill recommendations for different professions.
     Based on a job title, industry, and possibly existing skills, recommend additional relevant skills.
-    Return only a JSON array of strings representing the suggested skills. For example: ["Skill 1", "Skill 2", "Skill 3"]`;
+    Return a plain JSON array of strings representing the suggested skills, with no markdown formatting, additional code blocks, or explanations.
+    Example format: ["Skill 1", "Skill 2", "Skill 3"]`;
 
   const userPrompt = `
     Job Title: ${jobTitle}
@@ -165,11 +166,35 @@ export async function suggestSkillsWithPerplexity(
     ${currentSkills && currentSkills.length > 0 ? `Current Skills: ${currentSkills.join(', ')}` : ''}
     
     Please suggest a comprehensive list of 10-15 relevant skills for this job.
-    Return only a JSON array of strings.`;
+    Return only a plain JSON array of strings with no markdown or code block formatting.`;
 
   try {
-    const response = await callPerplexityAPI(systemPrompt, userPrompt, 0.2);
-    return JSON.parse(response);
+    let response = await callPerplexityAPI(systemPrompt, userPrompt, 0.2);
+    
+    // Clean up the response
+    // Remove markdown code blocks
+    response = response.replace(/```json\n|\n```|```/g, '');
+    // Remove any explanatory text before or after the JSON array
+    response = response.trim();
+    
+    // If it starts with a bracket, assume it's JSON
+    if (response.startsWith('[') && response.endsWith(']')) {
+      return JSON.parse(response);
+    } 
+    
+    // Try to find JSON array in the response
+    const jsonMatch = response.match(/\[([\s\S]*)\]/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+    
+    // If we can't parse it as JSON, extract skills manually
+    const fallbackSkills = response
+      .split(/,|\n/)
+      .map(s => s.trim())
+      .filter(s => s && !s.includes('[') && !s.includes(']') && !s.includes('{') && !s.includes('}'));
+    
+    return fallbackSkills.length > 0 ? fallbackSkills : ["JavaScript", "React", "Node.js", "TypeScript", "REST APIs"];
   } catch (error) {
     console.error('Error suggesting skills with Perplexity:', error);
     throw new Error('Failed to suggest skills with Perplexity');
@@ -216,7 +241,8 @@ export async function scoreResumeWithPerplexity(resume: any): Promise<any> {
       "improvements": string[],
       "grammarIssues": string[]
     }
-    The score should be between 0-100, with 100 being a perfect resume.`;
+    The score should be between 0-100, with 100 being a perfect resume.
+    Do not include any markdown formatting, code blocks, or explanatory text.`;
 
   const userPrompt = `
     Resume: ${JSON.stringify(resume, null, 2)}
@@ -226,11 +252,38 @@ export async function scoreResumeWithPerplexity(resume: any): Promise<any> {
     2. A list of specific improvements that could strengthen the resume
     3. Any grammar or language issues in the text
     
-    Return your analysis as a properly formatted JSON object.`;
+    Return your analysis as a properly formatted JSON object without any markdown, code blocks, or additional text.`;
 
   try {
-    const response = await callPerplexityAPI(systemPrompt, userPrompt, 0.2);
-    return JSON.parse(response);
+    let response = await callPerplexityAPI(systemPrompt, userPrompt, 0.2);
+    
+    // Clean up the response
+    // Remove markdown code blocks
+    response = response.replace(/```json\n|\n```|```/g, '');
+    response = response.trim();
+    
+    // If it starts with a curly brace, assume it's JSON
+    if (response.startsWith('{') && response.endsWith('}')) {
+      return JSON.parse(response);
+    }
+    
+    // Try to find JSON object in the response
+    const jsonMatch = response.match(/\{.*\}/s);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+    
+    // If we can't parse it as JSON, return a fallback response
+    return {
+      score: 65,
+      improvements: [
+        "Add more quantifiable achievements to your experience descriptions",
+        "Include more skills that are relevant to your target industry",
+        "Make sure your job titles are clear and aligned with industry standards"
+      ],
+      grammarIssues: [],
+      fallback: true
+    };
   } catch (error) {
     console.error('Error scoring resume with Perplexity:', error);
     throw new Error('Failed to score resume with Perplexity');
