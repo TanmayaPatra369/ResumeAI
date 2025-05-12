@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: ai-resume-builder
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: OPENAI_API_KEY
+        sync: false # This means you'll need to manually set this in Render dashboard
