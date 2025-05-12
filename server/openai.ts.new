@@ -18,15 +18,28 @@ export async function analyzeJobWithAI(jobDescription: string, resume: any) {
           role: "system",
           content: `You are an expert career advisor and resume analyst. Analyze the job description and resume to identify:
           1. Key skills mentioned in the job description and which ones the resume has or is missing
-          2. Experience requirements in the job and how the resume's experience matches
-          3. Calculate a percentage match of skills and experience
-          4. Provide specific actionable advice on improving the resume for this job
+          2. Experience requirements and whether the candidate meets them
           
-          Provide your analysis in a structured JSON format.`
+          Format response in JSON as:
+          {
+            "skillsMatch": {
+              "percentage": number, // 0-100
+              "matched": string[],
+              "missing": string[]
+            },
+            "experienceMatch": [
+              {
+                "requirement": string,
+                "context": string,
+                "met": boolean,
+                "resumeYears": string
+              }
+            ]
+          }`
         },
         {
           role: "user",
-          content: `Job Description: ${jobDescription}\n\nResume Content: ${JSON.stringify(resume)}`
+          content: `Job Description: ${jobDescription}\n\nResume: ${JSON.stringify(resume)}`
         }
       ],
       response_format: { type: "json_object" },
@@ -65,7 +78,8 @@ export async function generateSummaryWithAI(resume: any, jobDescription?: string
       temperature: 0.7,
     });
 
-    return response.choices[0].message.content.trim();
+    const content = response.choices[0].message.content || '';
+    return content.trim();
   } catch (error) {
     console.error("Error generating summary with OpenAI:", error);
     throw new Error("Failed to generate resume summary with AI");
@@ -82,21 +96,29 @@ export async function suggestSkillsWithAI(jobTitle: string, industry?: string, c
       messages: [
         {
           role: "system",
-          content: "You are a career and industry expert who suggests relevant skills for different job roles."
+          content: `You are an expert career advisor. Suggest 10-15 relevant skills for a resume based on the job title and industry.
+          
+          Format as a JSON object with this structure:
+          {
+            "technical": string[],
+            "soft": string[]
+          }
+          
+          Technical skills should be specific to the job requirements, and soft skills should be relevant interpersonal/professional abilities.`
         },
         {
           role: "user",
-          content: `Suggest 10 highly relevant technical and soft skills for a ${jobTitle} ${industry ? `in the ${industry} industry` : ''}.
-          ${currentSkills?.length ? `The person already has these skills: ${currentSkills.join(', ')}. Don't include these in your suggestions.` : ''}
-          Return the result as a JSON array of strings containing only the skill names.`
+          content: `Job Title: ${jobTitle}
+          ${industry ? `Industry: ${industry}` : ''}
+          ${currentSkills?.length ? `Current Skills: ${currentSkills.join(', ')}` : ''}`
         }
       ],
       response_format: { type: "json_object" },
-      temperature: 0.5,
+      temperature: 0.5
     });
 
-    const result = JSON.parse(response.choices[0].message.content);
-    return result.skills || [];
+    const content = response.choices[0].message.content || '{}';
+    return JSON.parse(content);
   } catch (error) {
     console.error("Error suggesting skills with OpenAI:", error);
     throw new Error("Failed to suggest skills with AI");
@@ -108,34 +130,47 @@ export async function suggestSkillsWithAI(jobTitle: string, industry?: string, c
  */
 export async function improveDescriptionWithAI(description: string, type: string) {
   try {
-    // Different prompts based on the type of content
-    const prompts = {
-      experience: "Improve this work experience description to be more impactful. Use action verbs, include achievements with metrics where possible, and keep it concise but impressive.",
-      project: "Improve this project description to highlight technical skills, achievements, and the impact of the work. Use action verbs and be specific about technologies used.",
-      summary: "Improve this professional summary to be more compelling. Highlight key qualifications and achievements, use professional language, and keep it concise (3-4 sentences)."
-    };
-
-    const prompt = prompts[type as keyof typeof prompts] || prompts.experience;
-
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
           role: "system",
-          content: "You are an expert resume writer who improves resume content to be more impactful and professional."
+          content: `You are an expert resume writer. Improve the following ${type} description by:
+          1. Making it more impactful with action verbs
+          2. Adding quantifiable achievements where possible
+          3. Ensuring it's concise and professional
+          
+          Format your response as a JSON object:
+          {
+            "improved": string,
+            "message": string
+          }`
         },
         {
           role: "user",
-          content: `${prompt}\n\nOriginal text: ${description}`
+          content: description
         }
       ],
-      temperature: 0.7,
+      response_format: { type: "json_object" },
+      temperature: 0.5,
     });
 
-    return response.choices[0].message.content.trim();
+    const content = response.choices[0].message.content || '{}';
+    const data = JSON.parse(content);
+    
+    return {
+      improved: data.improved,
+      fallback: data.fallback || false,
+      message: data.message
+    };
   } catch (error) {
-    console.error("Error improving description with OpenAI:", error);
-    throw new Error("Failed to improve description with AI");
+    console.error('Error improving description:', error);
+    // Return original description with fallback flag instead of throwing
+    return { 
+      improved: description,
+      fallback: true,
+      message: "Could not enhance content. Using original text."
+    };
   }
 }
 
@@ -175,7 +210,7 @@ export async function scoreResumeWithAI(resume: any) {
     });
 
     // Parse and validate the response
-    const content = response.choices[0].message.content;
+    const content = response.choices[0].message.content || '{}';
     const parsed = JSON.parse(content);
     
     // Ensure the response has the expected structure
