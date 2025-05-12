@@ -154,14 +154,14 @@ export default function Home() {
             <Button
               onClick={handleCreateResume}
               size="lg"
-              className="bg-highlight text-background hover:bg-opacity-80 transition-colors"
+              className="bg-blue-600 text-white hover:bg-blue-700 transition-colors"
             >
               Create New Resume
             </Button>
             <Button
               variant="outline"
               size="lg"
-              className="border-highlight text-highlight hover:bg-highlight hover:bg-opacity-10 transition-colors"
+              className="bg-blue-600 text-white hover:bg-blue-700 transition-colors"
               onClick={() => {
                 toast({
                   title: "LinkedIn Import",

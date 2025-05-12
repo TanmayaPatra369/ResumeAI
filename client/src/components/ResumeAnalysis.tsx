@@ -19,37 +19,59 @@ export function ResumeAnalysis() {
   
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [usingFallback, setUsingFallback] = useState(false);
+  const [lastAnalysisTime, setLastAnalysisTime] = useState<number>(0);
 
   // Run analysis when component mounts or resume changes significantly
   useEffect(() => {
     // Ensure resume is loaded and initialized before analyzing
-    if (initialized) {
+    // Only analyze if it's been more than 5 seconds since the last analysis
+    // This prevents too many API calls when the user is making lots of changes
+    const now = Date.now();
+    if (initialized && (now - lastAnalysisTime > 5000)) {
       performAnalysis();
     }
-    // This is a simplified dependency array - in a real app, you'd want to be more selective
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentResume.experience.length, currentResume.skills.length, currentResume.education.length, currentResume.personalDetails.summary]);
+  }, [
+    currentResume.experience.length, 
+    currentResume.skills.length, 
+    currentResume.education.length, 
+    currentResume.projects.length,
+    currentResume.personalDetails.summary,
+    initialized
+  ]);
   
   // Force analysis when component mounts
   useEffect(() => {
-    const timer = setTimeout(() => {
-      performAnalysis();
-    }, 1000); // Small delay to ensure data is loaded
-    
-    return () => clearTimeout(timer);
+    if (initialized) {
+      const timer = setTimeout(() => {
+        performAnalysis();
+      }, 1000); // Small delay to ensure data is loaded
+      
+      return () => clearTimeout(timer);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [initialized]);
 
   const performAnalysis = async () => {
     try {
       setIsAnalyzing(true);
       setUsingFallback(false);
+      setLastAnalysisTime(Date.now());
       
       const result = await analyzeResume(currentResume);
-      setAnalysis(result);
+      
+      // Ensure result has expected properties
+      const processedResult = {
+        score: typeof result.score === 'number' ? result.score : 0,
+        improvements: Array.isArray(result.improvements) ? result.improvements : [],
+        grammarIssues: Array.isArray(result.grammarIssues) ? result.grammarIssues : [],
+        fallback: result.fallback || false
+      };
+      
+      setAnalysis(processedResult);
       
       // Check if we're using fallback analysis
-      if (result.fallback) {
+      if (processedResult.fallback) {
         setUsingFallback(true);
         toast({
           title: "Using Basic Analysis",
@@ -59,6 +81,19 @@ export function ResumeAnalysis() {
       }
     } catch (error) {
       console.error('Error analyzing resume:', error);
+      
+      // Set basic fallback analysis when error occurs
+      setAnalysis({
+        score: 0,
+        improvements: [
+          "Add more details to your work experiences",
+          "Quantify your achievements with numbers", 
+          "Include relevant skills for your industry"
+        ],
+        grammarIssues: [],
+        fallback: true
+      });
+      
       setUsingFallback(true);
       toast({
         title: "Analysis Notice",
