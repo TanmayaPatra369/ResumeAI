@@ -28,6 +28,46 @@ export function ExperienceForm() {
     });
   };
 
+  // Function to handle making text bold
+  const handleMakeBold = (id: string) => {
+    const exp = experience.find(e => e.id === id);
+    if (!exp) return;
+    
+    // Get the textarea element
+    const textarea = document.getElementById(`description-${id}`) as HTMLTextAreaElement;
+    if (!textarea) return;
+    
+    // Get selected text
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = exp.description.substring(start, end);
+    
+    if (selectedText) {
+      // Add bold markers around the selected text
+      const newText = exp.description.substring(0, start) + 
+                     `**${selectedText}**` + 
+                     exp.description.substring(end);
+      
+      updateExperience(id, { description: newText });
+      
+      // Restore selection after a brief delay to let React update the DOM
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start, end + 4); // +4 for the two ** markers
+      }, 10);
+      
+      toast({
+        title: "Text Formatted",
+        description: "Selected text will appear bold in your resume.",
+      });
+    } else {
+      toast({
+        title: "No Text Selected",
+        description: "Please select some text to make it bold.",
+      });
+    }
+  };
+
   const handleImproveDescription = async (id: string) => {
     const exp = experience.find(e => e.id === id);
     if (!exp) return;
@@ -189,22 +229,34 @@ export function ExperienceForm() {
                   <Label htmlFor={`description-${exp.id}`} className="block text-secondary-text">
                     Description
                   </Label>
-                  <Button
-                    size="sm"
-                    className="text-xs btn-electric-blue px-2 py-1 rounded-full"
-                    onClick={() => handleImproveDescription(exp.id)}
-                    disabled={improvingIds.includes(exp.id)}
-                  >
-                    {improvingIds.includes(exp.id) ? (
-                      <span className="flex items-center">
-                        <span className="animate-spin mr-1">⟳</span> Enhancing...
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      className="text-xs btn-secondary px-2 py-1 rounded-full"
+                      onClick={() => handleMakeBold(exp.id)}
+                      title="Make selected text bold"
+                    >
+                      <span className="flex items-center font-bold">
+                        B
                       </span>
-                    ) : (
-                      <span className="flex items-center">
-                        <Sparkles className="h-3 w-3 mr-1" /> Enhance
-                      </span>
-                    )}
-                  </Button>
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="text-xs btn-electric-blue px-2 py-1 rounded-full"
+                      onClick={() => handleImproveDescription(exp.id)}
+                      disabled={improvingIds.includes(exp.id)}
+                    >
+                      {improvingIds.includes(exp.id) ? (
+                        <span className="flex items-center">
+                          <span className="animate-spin mr-1">⟳</span> Enhancing...
+                        </span>
+                      ) : (
+                        <span className="flex items-center">
+                          <Sparkles className="h-3 w-3 mr-1" /> Enhance
+                        </span>
+                      )}
+                    </Button>
+                  </div>
                 </div>
                 
                 <Textarea
@@ -217,9 +269,11 @@ export function ExperienceForm() {
 • Collaborated with cross-functional teams to deliver B on time and under budget"
                 />
                 
-                <div className="mt-2 text-sm text-highlight flex items-center">
-                  <Lightbulb className="h-3 w-3 mr-1" />
-                  <span>Tip: Quantify achievements with numbers and percentages</span>
+                <div className="mt-2 text-sm text-highlight flex items-center gap-1">
+                  <Lightbulb className="h-3 w-3" />
+                  <span>Tips: </span>
+                  <span>1) Select text and click B to make it bold, </span>
+                  <span>2) Quantify achievements with numbers and percentages</span>
                 </div>
               </div>
               

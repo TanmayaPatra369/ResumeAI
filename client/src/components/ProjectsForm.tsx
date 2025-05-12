@@ -19,6 +19,46 @@ export function ProjectsForm() {
   const handleInputChange = (id: string, key: string, value: any) => {
     updateProject(id, { [key]: value });
   };
+  
+  // Function to handle making text bold
+  const handleMakeBold = (id: string) => {
+    const project = projects.find(p => p.id === id);
+    if (!project) return;
+    
+    // Get the textarea element
+    const textarea = document.getElementById(`description-${id}`) as HTMLTextAreaElement;
+    if (!textarea) return;
+    
+    // Get selected text
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = project.description.substring(start, end);
+    
+    if (selectedText) {
+      // Add bold markers around the selected text
+      const newText = project.description.substring(0, start) + 
+                     `**${selectedText}**` + 
+                     project.description.substring(end);
+      
+      updateProject(id, { description: newText });
+      
+      // Restore selection after a brief delay to let React update the DOM
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start, end + 4); // +4 for the two ** markers
+      }, 10);
+      
+      toast({
+        title: "Text Formatted",
+        description: "Selected text will appear bold in your resume.",
+      });
+    } else {
+      toast({
+        title: "No Text Selected",
+        description: "Please select some text to make it bold.",
+      });
+    }
+  };
 
   const handleImproveDescription = async (id: string) => {
     const project = projects.find(p => p.id === id);
@@ -105,22 +145,34 @@ export function ProjectsForm() {
                   <Label htmlFor={`description-${project.id}`} className="block text-secondary-text">
                     Description
                   </Label>
-                  <Button
-                    size="sm"
-                    className="text-xs btn-electric-blue px-2 py-1 rounded-full"
-                    onClick={() => handleImproveDescription(project.id)}
-                    disabled={improvingIds.includes(project.id)}
-                  >
-                    {improvingIds.includes(project.id) ? (
-                      <span className="flex items-center">
-                        <span className="animate-spin mr-1">⟳</span> Enhancing...
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      className="text-xs btn-secondary px-2 py-1 rounded-full"
+                      onClick={() => handleMakeBold(project.id)}
+                      title="Make selected text bold"
+                    >
+                      <span className="flex items-center font-bold">
+                        B
                       </span>
-                    ) : (
-                      <span className="flex items-center">
-                        <Sparkles className="h-3 w-3 mr-1" /> Enhance
-                      </span>
-                    )}
-                  </Button>
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="text-xs btn-electric-blue px-2 py-1 rounded-full"
+                      onClick={() => handleImproveDescription(project.id)}
+                      disabled={improvingIds.includes(project.id)}
+                    >
+                      {improvingIds.includes(project.id) ? (
+                        <span className="flex items-center">
+                          <span className="animate-spin mr-1">⟳</span> Enhancing...
+                        </span>
+                      ) : (
+                        <span className="flex items-center">
+                          <Sparkles className="h-3 w-3 mr-1" /> Enhance
+                        </span>
+                      )}
+                    </Button>
+                  </div>
                 </div>
                 <Textarea
                   id={`description-${project.id}`}
