@@ -99,36 +99,34 @@ export function PersonalDetailsForm() {
           </div>
           
           <div>
-            <Label htmlFor="summary" className="block text-secondary-text mb-1">
-              Professional Summary
-            </Label>
-            <div className="relative">
-              <Textarea
-                id="summary"
-                className="w-full bg-background border border-border rounded-md px-3 py-2 focus:outline-none focus:border-primary-accent transition-colors h-24 resize-none"
-                placeholder="Brief overview of your experience and skills..."
-                value={personalDetails.summary}
-                onChange={(e) => handleInputChange('summary', e.target.value)}
-              />
-              <div className="absolute right-2 top-2">
-                <Button
-                  size="sm"
-                  className="text-xs btn-electric-blue px-2 py-1 rounded-full"
-                  onClick={handleGenerateSummary}
-                  disabled={summaryLoading}
-                >
-                  {summaryLoading ? (
-                    <span className="flex items-center">
-                      <span className="animate-spin mr-1">⟳</span> Generating...
-                    </span>
-                  ) : (
-                    <span className="flex items-center">
-                      <Sparkles className="h-3 w-3 mr-1" /> Auto-generate
-                    </span>
-                  )}
-                </Button>
-              </div>
+            <div className="flex justify-between items-center mb-1">
+              <Label htmlFor="summary" className="block text-secondary-text">
+                Professional Summary
+              </Label>
+              <Button
+                size="sm"
+                className="text-xs btn-electric-blue px-2 py-1 rounded-full"
+                onClick={handleGenerateSummary}
+                disabled={summaryLoading}
+              >
+                {summaryLoading ? (
+                  <span className="flex items-center">
+                    <span className="animate-spin mr-1">⟳</span> Generating...
+                  </span>
+                ) : (
+                  <span className="flex items-center">
+                    <Sparkles className="h-3 w-3 mr-1" /> Auto-generate
+                  </span>
+                )}
+              </Button>
             </div>
+            <Textarea
+              id="summary"
+              className="w-full bg-background border border-border rounded-md px-3 py-2 focus:outline-none focus:border-primary-accent transition-colors h-24 resize-none"
+              placeholder="Brief overview of your experience and skills..."
+              value={personalDetails.summary}
+              onChange={(e) => handleInputChange('summary', e.target.value)}
+            />
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

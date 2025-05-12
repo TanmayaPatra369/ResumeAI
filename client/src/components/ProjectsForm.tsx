@@ -101,36 +101,34 @@ export function ProjectsForm() {
               </div>
               
               <div className="mb-4">
-                <Label htmlFor={`description-${project.id}`} className="block text-secondary-text mb-1">
-                  Description
-                </Label>
-                <div className="relative">
-                  <Textarea
-                    id={`description-${project.id}`}
-                    className="w-full bg-background border border-border rounded-md px-3 py-2 focus:outline-none focus:border-primary-accent transition-colors min-h-[80px] resize-none"
-                    value={project.description}
-                    onChange={(e) => handleInputChange(project.id, 'description', e.target.value)}
-                    placeholder="Describe the project, technologies used, and your role. Use bullet points for clarity."
-                  />
-                  <div className="absolute right-2 top-2">
-                    <Button
-                      size="sm"
-                      className="text-xs btn-electric-blue px-2 py-1 rounded-full"
-                      onClick={() => handleImproveDescription(project.id)}
-                      disabled={improvingIds.includes(project.id)}
-                    >
-                      {improvingIds.includes(project.id) ? (
-                        <span className="flex items-center">
-                          <span className="animate-spin mr-1">⟳</span> Enhancing...
-                        </span>
-                      ) : (
-                        <span className="flex items-center">
-                          <Sparkles className="h-3 w-3 mr-1" /> Enhance
-                        </span>
-                      )}
-                    </Button>
-                  </div>
+                <div className="flex justify-between items-center mb-1">
+                  <Label htmlFor={`description-${project.id}`} className="block text-secondary-text">
+                    Description
+                  </Label>
+                  <Button
+                    size="sm"
+                    className="text-xs btn-electric-blue px-2 py-1 rounded-full"
+                    onClick={() => handleImproveDescription(project.id)}
+                    disabled={improvingIds.includes(project.id)}
+                  >
+                    {improvingIds.includes(project.id) ? (
+                      <span className="flex items-center">
+                        <span className="animate-spin mr-1">⟳</span> Enhancing...
+                      </span>
+                    ) : (
+                      <span className="flex items-center">
+                        <Sparkles className="h-3 w-3 mr-1" /> Enhance
+                      </span>
+                    )}
+                  </Button>
                 </div>
+                <Textarea
+                  id={`description-${project.id}`}
+                  className="w-full bg-background border border-border rounded-md px-3 py-2 focus:outline-none focus:border-primary-accent transition-colors min-h-[80px] resize-none"
+                  value={project.description}
+                  onChange={(e) => handleInputChange(project.id, 'description', e.target.value)}
+                  placeholder="Describe the project, technologies used, and your role. Use bullet points for clarity."
+                />
               </div>
               
               <div className="flex justify-end">
