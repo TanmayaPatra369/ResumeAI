@@ -182,10 +182,16 @@ export async function suggestSkillsWithPerplexity(
       return JSON.parse(response);
     } 
     
-    // Try to find JSON array in the response
-    const jsonMatch = response.match(/\[([\s\S]*)\]/);
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
+    // Try to find JSON array in the response by looking for the first [ and last ]
+    const startBracket = response.indexOf('[');
+    const endBracket = response.lastIndexOf(']');
+    if (startBracket !== -1 && endBracket !== -1 && startBracket < endBracket) {
+      try {
+        const jsonString = response.substring(startBracket, endBracket + 1);
+        return JSON.parse(jsonString);
+      } catch (e) {
+        console.error('Error parsing JSON array:', e);
+      }
     }
     
     // If we can't parse it as JSON, extract skills manually
@@ -267,10 +273,16 @@ export async function scoreResumeWithPerplexity(resume: any): Promise<any> {
       return JSON.parse(response);
     }
     
-    // Try to find JSON object in the response
-    const jsonMatch = response.match(/\{.*\}/s);
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
+    // Try to find JSON object in the response by looking for the first { and last }
+    const startBrace = response.indexOf('{');
+    const endBrace = response.lastIndexOf('}');
+    if (startBrace !== -1 && endBrace !== -1 && startBrace < endBrace) {
+      try {
+        const jsonString = response.substring(startBrace, endBrace + 1);
+        return JSON.parse(jsonString);
+      } catch (e) {
+        console.error('Error parsing JSON object:', e);
+      }
     }
     
     // If we can't parse it as JSON, return a fallback response
