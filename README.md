@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-
-# ResumeAI
-
-=======
-
 # AI-Powered Resume Builder
 
 A web-based resume builder that leverages machine learning to provide intelligent content suggestions, professional design templates, and comprehensive career optimization tools.
